@@ -11,7 +11,7 @@ let connectionDetails = {
     database: "chatify"
 };
 
-let email, password;
+let email, password, connection;
 
 http.createServer((req, res)=>{
     let reqUrl = url.parse(req.url, true);
@@ -36,7 +36,7 @@ http.createServer((req, res)=>{
             }
             if(path.startsWith("/login") || path.startsWith("/pull")){
                 //verifys the login detailes and pulls messages from the database if login is successful 
-                let connection = mysql.createConnection(connectionDetails);
+                connection = mysql.createConnection(connectionDetails);
                 verifyLogin(res,connection, (connection)=>{
                     let lastId = path.startsWith("/login") ? 0 : reqUrl.query.lastId;
                     //pulling the messages
@@ -70,7 +70,7 @@ http.createServer((req, res)=>{
                             return;
                         }
 
-                        let connection = mysql.createConnection(connectionDetails);
+                        connection = mysql.createConnection(connectionDetails);
 
                         verifyLogin(res,connection, (connection)=>{
                             connection.query("INSERT INTO messages(sender,recipient,content,time) VALUES(?,?,?,?)",[email, recipient, content, body.time],(error, result)=>{
@@ -93,7 +93,7 @@ http.createServer((req, res)=>{
         }
         else{
             res.writeHead(400, {'Content-Type':'text/plain'});
-            res.write("please pass on both email and password");
+            res.write("please pass on both email and password or choose the correct request method");
             res.end();
             return;
         }
@@ -124,6 +124,7 @@ function verifyLogin(res, connection, successCallback){ //responsible for verify
             if(result1[0].count === 1){
                 //found the user and detailes were correct
                 successCallback(connection);
+                return;
             }
             else{
                 //incorrect detailes
@@ -138,23 +139,24 @@ function verifyLogin(res, connection, successCallback){ //responsible for verify
 }
 
 function pullContacts(res,messages, connection){ //resposible for pulling the contact by the most relevent contacts
-    connection.query("SELECT table1.sender as email, users.name FROM (SELECT MAX(time) AS last_message_time, sender AS sender FROM messages WHERE sender='lee@gmail.com' OR recipient='lee@gmail.com' GROUP BY sender) AS table1 INNER JOIN users ON users.email = table1.sender ORDER BY last_message_time DESC;", [email, email], (error1, result1)=>{
+    connection.query("SELECT table1.sender as email, users.name FROM (SELECT MAX(time) AS last_message_time, sender AS sender FROM messages WHERE sender=? OR recipient=? GROUP BY sender) AS table1 INNER JOIN users ON users.email = table1.sender ORDER BY last_message_time DESC;", [email, email], (error1, result1)=>{
+        connection.end();
         if(error1){
-            connection.end();
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.write("run into problem while trying to query the database");
             res.end();
+            return;
         }
         let indexOfMyEmail = findIndexByfield("email", email, result1);
-        result1.splice(indexOfMyEmail,1);
+        indexOfMyEmail == -1 ? "" :result1.splice(indexOfMyEmail,1);
+
         let response = {
             contacts:result1,
             messages:messages
         };
-        connection.end();
         res.writeHead(200, {'Content-Type':'application/JSON'});
         res.end(JSON.stringify(response));
-        connection.end();
+        return;
     });
 }
 
