@@ -30,14 +30,63 @@ http.createServer((req, res)=>{
 
             path = path.substring(4);
     
-            if(path.startsWith("/register")){
-                //passes to the server the detalies of the new user
-    
+            if(path.startsWith("/registerParameters")){
+                res.writeHead(200, {'Content-Type':'application/json'});
+                res.write(serverTools.getParametersOfRegister());
+                res.end();
+                return;
             }
-            if(path.startsWith("/login") || path.startsWith("/pull")){
-                //verifys the login detailes and pulls messages from the database if login is successful 
+
+            if(path.startsWith("/register")){//passes to the server the detalies of the new user
+                let name = reqUrl.query.name;
+                if(!name){
+                    res.writeHead(400, {'Content-Type':'text/plain'});
+                    res.write("name is missing");
+                    res.end();
+                    return;
+                }
+                if(serverTools.serverValidateRegister(email, password, name)){
+                    //email, password and name are valid
+                    connection = mysql.createConnection(connectionDetails);
+                    let strname = name+"";
+                    let stremail = email+"";
+                    let strpassword = password+"";
+                    connection.query("INSERT INTO users(email, password, name) VALUES(?,?,?)",[stremail,strpassword,strname],(error1,result1)=>{
+                        connection.end();
+                        if(error1){
+                            res.writeHead(500, {'Content-Type':'text/plain'});
+                            res.write("error occured in the database while tryin to insert new user");
+                            res.end();
+                            return;
+                        }
+                        if(result1.affectedRows == 1){
+                            res.writeHead(200, {'Content-Type':'text/plain'});
+                            res.write("successful");
+                            res.end();
+                            return;
+                        }
+                        else{
+                            res.writeHead(500, {'Content-Type':'text/plain'});
+                            res.write("The user wasn't created");
+                            res.end();
+                            return;
+                        }
+                    });
+                }
+                else{
+                    //email, password and name are not valid
+                    res.writeHead(400, {'Content-Type':'text/plain'});
+                    res.write("invalid email / password / name.");
+                    res.end();
+                    return;
+                }
+            }
+
+            if(path.startsWith("/login") || path.startsWith("/pull")){//verifys the login detailes and pulls messages from the database if login is successful 
+                
                 connection = mysql.createConnection(connectionDetails);
                 verifyLogin(res,connection, (connection)=>{
+                    
                     let lastId = path.startsWith("/login") ? 0 : reqUrl.query.lastId;
                     //pulling the messages
                     connection.query("SELECT * FROM messages WHERE (sender=? OR recipient=?) AND id>?",[email, email, lastId],(error2, result2)=>{
@@ -52,8 +101,9 @@ http.createServer((req, res)=>{
                     });
                 });
             }
-            if(path.startsWith("/send")){
-                //inserts a message to the database
+
+            if(path.startsWith("/send")){//inserts a message to the database
+                
                 if(req.method == "POST"){
                     serverTools.readPostBody(req, (strBody)=>{
                         let body = JSON.parse(strBody);
@@ -63,7 +113,7 @@ http.createServer((req, res)=>{
                         let recipient = body.recipient;
                         let content = body.content;
 
-                        if(!recipient || !email || !password || !content || content ==""){
+                        if(!recipient || !email || !password || !content || content =="" || !body.time){
                             res.writeHead(400, {'Content-Type':'text/plain'});
                             res.write("Insufficient information to send a message");
                             res.end();
@@ -91,6 +141,7 @@ http.createServer((req, res)=>{
                 }
             }
         }
+
         else{
             res.writeHead(400, {'Content-Type':'text/plain'});
             res.write("please pass on both email and password or choose the correct request method");
@@ -98,6 +149,7 @@ http.createServer((req, res)=>{
             return;
         }
     }
+
     else{
         // static files
     }
