@@ -1,6 +1,6 @@
 let fs = require("fs");
 
-exports.fileServer = function(folder ,path, defultPage, res){
+exports.fileServer = (folder ,path, defultPage, res)=>{
     //File request  
     let extention = {
         ".html": "text/html",
@@ -10,7 +10,11 @@ exports.fileServer = function(folder ,path, defultPage, res){
         ".js": "application/javascript",
 
         ".png": "image/png",
-        ".jpeg":"image/jpeg"
+        ".jpeg":"image/jpeg",
+        ".gif":"image/gif",
+        ".ico":"image/x-icon",
+
+        ".mp4":"video/mp4"
     }
 
     let filename = folder + path;
@@ -66,4 +70,15 @@ exports.getParametersOfRegister = ()=> {
     }
     
     return  JSON.stringify(obj);
+}
+
+
+exports.findLast = (array, callback)=>{
+    for(let i = array.length-1; i>-1; i--){
+        let answer = callback(array[i]);
+        if(answer == true){
+            return array[i];
+        }
+    }
+    return -1;
 }

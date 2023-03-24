@@ -87,9 +87,9 @@ http.createServer((req, res)=>{
                 connection = mysql.createConnection(connectionDetails);
                 verifyLogin(res,connection, (connection)=>{
                     
-                    let lastId = path.startsWith("/login") ? 0 : reqUrl.query.lastId;
+                    let lastId = path.startsWith("/login") ? 0 : parseInt(reqUrl.query.lastId);
                     //pulling the messages
-                    connection.query("SELECT * FROM messages WHERE (sender=? OR recipient=?) AND id>?",[email, email, lastId],(error2, result2)=>{
+                    connection.query("SELECT * FROM messages WHERE (sender=? OR recipient=?)",[email, email],(error2, result2)=>{
                         if(error2){
                             connection.end();
                             res.writeHead(500, {'Content-Type':'text/plain'});
@@ -97,7 +97,7 @@ http.createServer((req, res)=>{
                             res.end();
                             return;
                         }
-                        pullContacts(res,result2,connection);
+                        pullContacts(res,result2,lastId,connection);
                     });
                 });
             }
@@ -152,6 +152,7 @@ http.createServer((req, res)=>{
 
     else{
         // static files
+        serverTools.fileServer("../client",reqUrl.path,"/public/index.html", res);
     }
 
 }).listen(8080);
@@ -190,7 +191,7 @@ function verifyLogin(res, connection, successCallback){ //responsible for verify
     })
 }
 
-function pullContacts(res,messages, connection){ //resposible for pulling the contact by the most relevent contacts
+function pullContacts(res,messages, lastId, connection){ //resposible for pulling the contact by the most relevent contacts
     connection.query("SELECT table1.sender as email, users.name FROM (SELECT MAX(time) AS last_message_time, sender AS sender FROM messages WHERE sender=? OR recipient=? GROUP BY sender) AS table1 INNER JOIN users ON users.email = table1.sender ORDER BY last_message_time DESC;", [email, email], (error1, result1)=>{
         connection.end();
         if(error1){
@@ -202,10 +203,18 @@ function pullContacts(res,messages, connection){ //resposible for pulling the co
         let indexOfMyEmail = findIndexByfield("email", email, result1);
         indexOfMyEmail == -1 ? "" :result1.splice(indexOfMyEmail,1);
 
+        for(let i = 0; i<result1.length; i++){
+            let lastmessage = serverTools.findLast(messages,(mess) =>{return (mess.sender==result1[i].email || mess.recipient==result1[i].email)});
+            result1[i].lastmessage = lastmessage;
+        }
+
+        let newMessages = messages.filter((message)=>message.id>lastId);
+
         let response = {
             contacts:result1,
-            messages:messages
+            messages:newMessages
         };
+
         res.writeHead(200, {'Content-Type':'application/JSON'});
         res.end(JSON.stringify(response));
         return;
@@ -220,3 +229,4 @@ function findIndexByfield(fieldName, val, array) { //only meant to find object's
     }
     return -1; 
 }
+
