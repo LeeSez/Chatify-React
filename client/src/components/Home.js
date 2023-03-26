@@ -32,7 +32,7 @@ export default class Home extends React.Component{
             }
             else{
                 resopnse = JSON.parse(resopnse);
-                let newMessages = concatAnyArray(this.props.messages, resopnse.messages);
+                let newMessages = concatAnyArray(this.props.messages, resopnse.messages, true);
                 this.props.setContacts(resopnse.contacts);
                 this.props.setMessages(newMessages);
                 this.setState({contactsElements:this.props.contacts.map((val)=> <Contact key={val.email} contact={val} email={this.props.email} setEmailOpenChat={this.setEmailOpenChat}/>)});
@@ -47,7 +47,14 @@ export default class Home extends React.Component{
                 home
                 {this.state.openChat == "" ?
                 this.state.contactsElements
-                : <Chat recipient={this.state.openChat} setOpenChat={this.setOpenChat}/>
+                : <Chat 
+                recipient={this.state.openChat} 
+                messages={this.props.messages} 
+                setOpenChat={this.setOpenChat}
+                email={this.props.email}
+                password={this.props.password}
+                baseUrl={this.props.baseUrl}
+                />
                 }
             </div>
         );

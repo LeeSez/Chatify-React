@@ -40,13 +40,25 @@ export function deleteChildNodes(keepNumber, element){
     }
 }
 
-export function concatAnyArray(array1, array2){
+export function concatAnyArray(array1, array2, preventDuplicates){
     let newArray = [];
     for(let i = 0; i<array1.length; i++){
         newArray.push(array1[i]);
     }
     for(let i = 0; i<array2.length; i++){
-        newArray.push(array2[i]);
+        if(preventDuplicates && !newArray.some(message => message.id == array2[i].id)) newArray.push(array2[i]);
+        else if(!preventDuplicates) newArray.push(array2[i]);
     }
     return newArray;
+}
+
+export function formatDate(){
+    let date = new Date();
+    let month = (date.getMonth()+1) < 10 ? "0"+(date.getMonth()+1) : (date.getMonth()+1);
+    let day = date.getDate() < 10 ? "0"+date.getDate() : date.getDate();
+    let hour = date.getHours() < 10 ? "0"+date.getHours() : date.getHours();
+    let min = date.getMinutes() < 10 ? "0"+date.getMinutes() : date.getMinutes();
+    let sec = date.getSeconds() < 10 ? "0"+date.getSeconds() : date.getSeconds();
+    let strDate = date.getFullYear()+"-"+month+"-"+day+" "+hour+":"+min+":"+sec;
+    return strDate;
 }

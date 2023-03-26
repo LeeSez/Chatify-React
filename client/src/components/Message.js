@@ -8,7 +8,7 @@ export default class Message extends React.Component {
     render(){
         return(
             <div className="message">
-            
+                {this.props.messageItSelf.content}
             </div>
         )
     }
