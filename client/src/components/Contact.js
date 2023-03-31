@@ -14,9 +14,11 @@ export default class Contact extends React.Component{
 
         return(
             <div className="contact" id={this.props.contact.email} onClick={this.props.setEmailOpenChat}>
-                <h5>{this.props.contact.name}</h5>
-                <p>{relativeDay ? relativeDay : time.getDate()+ " "+ convertToStrMonth(time.getMonth())}</p>
-                <p>{this.props.email == this.props.contact.lastmessage.sender? "You" : this.props.contact.name}: {this.props.contact.lastmessage.content}</p>
+                <div className="flexRow nameRow">
+                    <p className="contactName">{this.props.contact.name}</p>
+                    <p>{relativeDay ? relativeDay : time.getDate()+ " "+ convertToStrMonth(time.getMonth())}</p>
+                </div>
+                <p className="lastMessage">{this.props.contact.lastmessage.content}</p>
             </div>
         );
     }

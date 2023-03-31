@@ -1,6 +1,8 @@
 import React from "react";
 import Contact from "./Contact";
 import Chat from "./Chat";
+import Logo from "./Logo";
+import Footer from "./Footer";
 import {sendHttpGetRequest, concatAnyArray} from "../clientTools";
 
 export default class Home extends React.Component{
@@ -43,10 +45,16 @@ export default class Home extends React.Component{
 
     render(){
         return(
-            <div id="home">
-                home
+            <div id="home" className="flexCol">
+                <div className="flexRow titleWrapper">
+                    <Logo size="small"/>
+                    <p className="title flexRow homeTitle">CHATS</p>
+                </div>
+                
                 {this.state.openChat == "" ?
-                this.state.contactsElements
+                <div className="flexCol contactList">
+                    {this.state.contactsElements}
+                </div>
                 : <Chat 
                 recipient={this.state.openChat} 
                 messages={this.props.messages} 
@@ -56,6 +64,7 @@ export default class Home extends React.Component{
                 baseUrl={this.props.baseUrl}
                 />
                 }
+                <Footer />
             </div>
         );
     }

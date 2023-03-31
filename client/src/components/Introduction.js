@@ -1,6 +1,7 @@
 import React from "react";
 import Login from "./Login";
 import Register from "./Register";
+import Logo from "./Logo";
 
 export default class Introduction extends React.Component {
     constructor(props){
@@ -16,11 +17,19 @@ export default class Introduction extends React.Component {
     }
     render(){
         return(
-            <div id="intro">
-                <h1>Chatify</h1>
-                {this.state.page === "empty" && <div className="flexRow">
-                    <button onClick={()=>this.setPage("login")}>Login</button>
-                    <button onClick={()=>this.setPage("register")}>Register</button>
+            <div id="intro" className="flexCol">
+                
+                {this.state.page== "empty" ?
+                <div id="introLogo">
+                    <Logo size="big"/>
+                </div> :
+                <Logo size="small"/>
+                }
+
+                {this.state.page === "empty" && 
+                <div className="flexCol" id="btnsWrapper">
+                    <button onClick={()=>this.setPage("login")} id="btnLogin"> <p>Login</p> </button>
+                    <button onClick={()=>this.setPage("register")} id="btnRegister">Register</button>
                 </div>}
                 
                 {this.state.page === "login" && 

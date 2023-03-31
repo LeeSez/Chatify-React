@@ -1,4 +1,4 @@
-export function sendHttpGetRequest(url,callback){
+export function sendHttpGetRequest(url,callback, errorCallback){
     let httpRequest = new XMLHttpRequest();
 
     httpRequest.onreadystatechange = ()=>{
@@ -7,6 +7,9 @@ export function sendHttpGetRequest(url,callback){
                 callback(httpRequest.response);
             }
             else{
+                if(errorCallback){
+                    errorCallback(httpRequest.status,httpRequest.response);
+                }
                 console.log("exited on:"+httpRequest.status+", and the server said:"+httpRequest.response);
             }
         }

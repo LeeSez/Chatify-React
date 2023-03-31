@@ -21,21 +21,21 @@ http.createServer((req, res)=>{
         //API requests
         res.setHeader("Access-Control-Allow-Origin","*"); //allows all http request from any origin
 
-        if(req.method == "GET"){
+        if(req.method == "GET" && !path.startsWith("/api/registerParameters")){
             email = reqUrl.query.email;
             password = reqUrl.query.password;
+        }
+
+        if(path.startsWith("/api/registerParameters")){
+            res.writeHead(200, {'Content-Type':'application/json'});
+            res.write(serverTools.getParametersOfRegister());
+            res.end();
+            return;
         }
 
         if(req.method == "POST" || (email && password)){
 
             path = path.substring(4);
-    
-            if(path.startsWith("/registerParameters")){
-                res.writeHead(200, {'Content-Type':'application/json'});
-                res.write(serverTools.getParametersOfRegister());
-                res.end();
-                return;
-            }
 
             if(path.startsWith("/register")){//passes to the server the detalies of the new user
                 let name = reqUrl.query.name;
@@ -55,7 +55,7 @@ http.createServer((req, res)=>{
                         connection.end();
                         if(error1){
                             res.writeHead(500, {'Content-Type':'text/plain'});
-                            res.write("error occured in the database while tryin to insert new user");
+                            res.write("User already exists");
                             res.end();
                             return;
                         }

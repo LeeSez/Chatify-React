@@ -64,9 +64,9 @@ exports.serverValidateRegister =(email, password, name)=>{
 
 exports.getParametersOfRegister = ()=> {
     let obj = {
-        email:"Email has to contain '@' and and it's length wont be under 7 and over 40.",
-        password: "Password has to contain at least 1 upper-case letter, and at least 6 more charaters, it's length wont be under 7 and over 45.",
-        name: "Name's lenght wont be under 2 and over 20."
+        email:" Must contain '@',  7 < length < 40",
+        password: "1 uppercase letter, 7 < legth < 45",
+        name: "2 < length < 20"
     }
     
     return  JSON.stringify(obj);
