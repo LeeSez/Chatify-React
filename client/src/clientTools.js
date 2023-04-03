@@ -65,3 +65,9 @@ export function formatDate(){
     let strDate = date.getFullYear()+"-"+month+"-"+day+" "+hour+":"+min+":"+sec;
     return strDate;
 }
+
+export function formateTime(number){
+    //this is only in favor of displaying the time correctly 9:2 => 09:02
+    if(number<10) return "0"+number;
+    return number;
+}

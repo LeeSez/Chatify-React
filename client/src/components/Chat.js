@@ -36,7 +36,7 @@ export default class Chat extends React.Component {
     messageElements = [];
     openVisualChat = ()=>{
         this.messagesArray = this.props.messages.filter(message => message.sender==this.props.recipient || message.recipient==this.props.recipient);
-        this.messageElements = this.messagesArray.map(message => <Message key={message.id} messageItSelf={message}/>);
+        this.messageElements = this.messagesArray.map(message => <Message key={message.id} messageItSelf={message} email={this.props.email}/>);
     }
 
     componentDidMount(){
@@ -48,8 +48,12 @@ export default class Chat extends React.Component {
 
     render(){
         return (
-            <div className="chat">
-                <button onClick={()=>this.props.setOpenChat("")}>Exit</button>
+            <div className="chat flexCol">
+                <div className="top flexRow">
+                    <div className="recipientImage"></div>
+                    <p>{this.props.recipientName}</p>
+                    <div id="back" onClick={()=>this.props.setOpenChat("")}></div>
+                </div>
                 <div className="messagesContainer">
                     {this.messageElements}
                 </div>
@@ -62,3 +66,5 @@ export default class Chat extends React.Component {
         )
     }
 }
+
+// <button onClick={()=>this.props.setOpenChat("")}>Exit</button>

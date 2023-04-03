@@ -8,8 +8,12 @@ export default class KeyboardLine extends React.Component {
     render(){
         return(
             <div className="keyboardLine">
-                <input value={this.props.messageToSend} onChange={this.props.setMessageToSend}/>
-                <button onClick={this.props.sendFunction}>send</button>
+                <div className="flexRow keyWraper">
+                    <textarea value={this.props.messageToSend} onChange={this.props.setMessageToSend} placeholder="Message.."/>
+                    <button onClick={this.props.sendFunction}></button>
+                </div>
+                <div id="lightLine"></div>
+                <div id="darkLine"></div>
             </div>
        )
     }

@@ -39,6 +39,9 @@ small{
     font-size: 0.6rem;
     margin:0;
 }
+textarea:focus{
+    outline: none;
+}
 
 
 /* App */
@@ -67,7 +70,7 @@ small{
     
     background-position: 0% 60%;
     
-    background-image: url("../images/logoBackground.jpg");
+    background-image: url("../public/images/logoBackground.jpg");
     width: 100vw;
 }
 .smallBack{
@@ -88,7 +91,7 @@ small{
     background-repeat: no-repeat;
     background-size:cover;
     font-size:max(1.7rem, 30px);
-    background-image: url("../images/SmallC.jpg");
+    background-image: url("../public/images/SmallC.jpg");
     background-position: -5px -4px;
 
     width: inherit;
@@ -187,6 +190,11 @@ small{
     width:inherit;
     padding:2vh 0;
     border-bottom:2px solid #ECECEC;
+
+    justify-content: flex-start !important;
+}
+.recipientWrap{
+    width: 100%;
 }
 .nameRow{
     justify-content: space-between !important;
@@ -199,22 +207,44 @@ small{
 }
 .lastMessage{
     color: var(--gray);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 400;
 
     margin:0;
+
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 .contactName{
     color: var(--black);
     font-size: 0.8rem;
     font-weight: 500;
 }
+.contactName ~ p{
+    font-size: 0.65rem;
+    font-weight: 400;
+}
+.recipientImage{
+    min-width:12vw;
+    aspect-ratio: 1 / 1;
+    margin-right: 3vw;
+
+    border-radius: 50%;
+    border: 2px solid #ECECEC;
+
+    background-image: url("../public/images/user\ \(1\).png");
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
 
 
 /* Home */
 #home{
     height: 100vh;
-    justify-content: flex-end;
+    overflow: hidden;
+    justify-content: flex-start;
 }
 .titleWrapper{
     justify-self: flex-start;
@@ -225,12 +255,14 @@ small{
     font-size: 1.1rem !important;
 }
 .contactList{
-    width: 80vw;
-    height:70vh;
+    width: 85vw;
+    height:73vh;
+    margin-top: 2vh;
 
     overflow-y: scroll;
     overflow-x: hidden;
 
+    justify-content: flex-start !important;
 }
 
 
@@ -264,6 +296,129 @@ small{
 
     box-shadow: 0px 3px 2px rgba(100, 100, 100, 0.25);
 }
+
+
+/* Chat */
+.chat{
+    width: 100vw;
+    height: 100vh;
+
+    justify-content: flex-start !important;
+}
+.messagesContainer{
+    width: inherit;
+    height: 80vh;
+    width: 80vw;
+
+    overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    justify-content: flex-start;
+}
+.myMessage{
+    align-self: flex-end !important;
+}
+.top{
+    width: 100vw;
+    height: 10vh;
+
+    box-shadow: 0 4px 4px #00000015;
+    z-index: 1;
+
+    justify-content: space-evenly !important;
+}
+#back{
+    width:32px;
+    height:32px;
+
+    background-image: url("../public/images/back.png");
+}
+
+
+/* Message */
+.message{
+    background-color: var(--lightGray);
+
+    height: fit-content;
+    padding: 4vw 5vw;
+    padding-bottom: 2vw;
+    min-width:10vw;
+    max-width: 60vw;
+    width: fit-content;
+    margin-top: 1vh;
+
+    border-radius: 6vw;
+
+    font-size: 0.75rem;
+    word-break: break-all;
+}
+.messageContent{
+    margin: 0;
+    font-weight: 400;
+}
+.time{
+    font-size: 0.7rem;
+    color: var(--gray);
+
+    margin: 0;
+
+    justify-content: flex-end !important;
+}
+
+
+/* keyboard */
+.keyboardLine textarea{
+    font-family: inherit;
+    background-color: var(--lightGray);
+    border-radius: 8vw;
+    width:60%;
+    height: 90%;
+    min-height: 80%;
+    max-height: 15vh;
+    padding:0 5%;
+
+    margin: 0;
+    resize: none;
+
+    border:none;
+
+    overflow-y: scroll;
+}
+.keyboardLine button{
+    background-color: var(--lightGray);
+    border-radius: 50%;
+    
+    height: 100%;
+    aspect-ratio: 1 / 1;
+
+    border: none;
+
+    background-image: url("../public/images/send.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.keyboardLine, footer{
+    width: 100vw;
+    height: 15vh;
+
+    position: absolute;
+    top:85vh;
+}
+.keyWraper{
+    height: 40%;
+    position: relative;
+    top:4vh;
+
+    z-index: 1;
+
+    justify-content: space-around !important;
+}
+.keyWraper *{
+    filter:drop-shadow(0 2px 2px #00000025)
+}
+
 
 
 /* Side Classes */

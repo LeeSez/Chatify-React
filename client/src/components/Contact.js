@@ -1,4 +1,5 @@
 import React from "react";
+import { formateTime } from "../clientTools";
 
 export default class Contact extends React.Component{
     constructor(props){
@@ -9,16 +10,21 @@ export default class Contact extends React.Component{
         let time = new Date(this.props.contact.lastmessage.time);
         let now = new Date(Date.now());
         let relativeDay;
-        if((time.getDate() == now.getDate())&& (time.getMonth() == now.getMonth()) && (time.getFullYear() == now.getFullYear())) relativeDay = time.getHours()+":"+time.getMinutes();
+        if((time.getDate() == now.getDate())&& (time.getMonth() == now.getMonth()) && (time.getFullYear() == now.getFullYear())){
+            relativeDay =formateTime(time.getHours())+":"+formateTime(time.getMinutes());
+        } 
         else if((time.getMonth() == now.getMonth()) && (time.getDate() + 1 == now.getDate())) relativeDay = "Yesterday";
 
         return(
-            <div className="contact" id={this.props.contact.email} onClick={this.props.setEmailOpenChat}>
-                <div className="flexRow nameRow">
-                    <p className="contactName">{this.props.contact.name}</p>
-                    <p>{relativeDay ? relativeDay : time.getDate()+ " "+ convertToStrMonth(time.getMonth())}</p>
+            <div className="contact flexRow" id={this.props.contact.email} onClick={this.props.setOpenChat}>
+                <div className="recipientImage"></div>
+                <div className="recipientWrap">
+                    <div className="flexRow nameRow">
+                        <p className="contactName">{this.props.contact.name}</p>
+                        <p>{relativeDay ? relativeDay : time.getDate()+ " "+ convertToStrMonth(time.getMonth())}</p>
+                    </div>
+                    <p className="lastMessage">{this.props.contact.lastmessage.content}</p>
                 </div>
-                <p className="lastMessage">{this.props.contact.lastmessage.content}</p>
             </div>
         );
     }

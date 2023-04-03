@@ -3,7 +3,7 @@ import React from "react";
 export default class Footer extends React.Component{
     render(){
         return (
-            <fotter>
+            <footer>
                 <div className="footerButtons flexRow">
                     <div className="flexCol"><img src="../images/settings.png"/></div>
                     <div className="flexCol"><img src="../images/user.png"/></div>
@@ -11,7 +11,7 @@ export default class Footer extends React.Component{
                 </div>
                 <div id="lightLine"></div>
                 <div id="darkLine"></div>
-            </fotter>
+            </footer>
         );
     }
 }
