@@ -40,10 +40,11 @@ export default class Home extends React.Component{
     }
 
     render(){
-        let contactName;
+        let contact, contactName, contactImage;
         if(this.state.openChat != "" && this.props.contacts){
-            contactName = this.props.contacts.find((element) => element.email==this.state.openChat);
-            contactName = contactName.name;
+            contact = this.props.contacts.find((element) => element.email==this.state.openChat);
+            contactName = contact.name;
+            contactImage = contact.profile_picture;
             //contactName = this.props.contacts[contactName].name;
         }
         return(
@@ -62,6 +63,7 @@ export default class Home extends React.Component{
                 : <Chat 
                 recipient={this.state.openChat}
                 recipientName={contactName} 
+                profile_picture={contactImage}
                 messages={this.props.messages} 
                 setOpenChat={this.setOpenChat}
                 email={this.props.email}

@@ -23,7 +23,7 @@ input{
 
     width: 75vw;
     height: 6vh;
-    margin-top:2vh;
+    margin-top:1vh;
 
     border-bottom: 2px solid var(--gray);
 
@@ -105,10 +105,10 @@ textarea:focus{
 
 /* Indroduction */
 #intro{
-    width: inherit;
-    height: inherit;
+    width: 100vw;
+    height: 100vh;
 
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 #btnLogin, #btnRegister{
     color: white;
@@ -146,9 +146,9 @@ textarea:focus{
 #login{
     font-family: 'Poppins', sans-serif;
 
-    justify-content: space-between;
+    justify-content: flex-end;
 
-    height: 70vh;
+    height: 75vh;
 }
 .info{
     color:var(--gray);
@@ -172,14 +172,40 @@ textarea:focus{
 #register{
     font-family: 'Poppins', sans-serif;
 
-    justify-content: space-between;
+    justify-content: flex-end;
 
-    height: 75vh;
+    height: 100vh;
 }
 #serverMessage{
     color: var(--red);
     font-size: 0.8rem;
     font-weight: 500;
+}
+#displayImage{
+    width: 45vw;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+
+    background-color: var(--lightGray);
+
+    background-position: center;
+    background-size: cover;
+}
+.imageUpload{
+    border: none;
+    font-size: 0.5rem;
+    width: 21vw;
+
+    margin-top: 1vh;
+}
+.imageUpload::file-selector-button{
+    border:none;
+    background-color: var(--black);
+    padding: 2vw;
+    border-radius: 2vw;
+
+    color: white;
+    font-family: inherit;
 }
 
 
@@ -236,7 +262,8 @@ textarea:focus{
 
     background-image: url("../public/images/user\ \(1\).png");
     background-repeat: no-repeat;
-    background-position: bottom;
+    background-position: center;
+    background-size: cover;
 }
 
 
@@ -352,7 +379,7 @@ textarea:focus{
     border-radius: 6vw;
 
     font-size: 0.75rem;
-    word-break: break-all;
+    /*word-break: break-all;*/
 }
 .messageContent{
     margin: 0;

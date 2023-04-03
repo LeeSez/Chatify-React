@@ -19,7 +19,7 @@ export function sendHttpGetRequest(url,callback, errorCallback){
     httpRequest.send();
 } 
 
-export function sendHttpPostRequest(url,body,callback){
+export function sendHttpPostRequest(url,body,callback, errorCallback){
     let httpRequest = new XMLHttpRequest();
 
     httpRequest.onreadystatechange = ()=>{
@@ -29,6 +29,7 @@ export function sendHttpPostRequest(url,body,callback){
             }
             else{
                 console.log("exited on:"+httpRequest.status+", and the server said:"+httpRequest.response);
+                errorCallback(httpRequest.response);
             }
         }
     };

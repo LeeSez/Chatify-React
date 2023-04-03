@@ -37,48 +37,60 @@ http.createServer((req, res)=>{
 
             path = path.substring(4);
 
-            if(path.startsWith("/register")){//passes to the server the detalies of the new user
-                let name = reqUrl.query.name;
-                if(!name){
-                    res.writeHead(400, {'Content-Type':'text/plain'});
-                    res.write("name is missing");
-                    res.end();
-                    return;
-                }
-                if(serverTools.serverValidateRegister(email, password, name)){
-                    //email, password and name are valid
-                    connection = mysql.createConnection(connectionDetails);
-                    let strname = name+"";
-                    let stremail = email+"";
-                    let strpassword = password+"";
-                    connection.query("INSERT INTO users(email, password, name) VALUES(?,?,?)",[stremail,strpassword,strname],(error1,result1)=>{
-                        connection.end();
-                        if(error1){
-                            res.writeHead(500, {'Content-Type':'text/plain'});
-                            res.write("User already exists");
+            if(path.startsWith("/register")){//passes to the server the detalies of the new user{
+                if(req.method == "POST"){
+                    serverTools.readPostBody(req, (strBody)=>{
+                        let body = JSON.parse(strBody);
+                        
+                        email = body.email;
+                        password = body.password;
+                        let name = body.name;
+                        let image = body.image;
+
+                        if(!name || !email || !password || !image ){
+                            res.writeHead(400, {'Content-Type':'text/plain'});
+                            res.write("Insufficient information to send a message");
                             res.end();
                             return;
                         }
-                        if(result1.affectedRows == 1){
-                            res.writeHead(200, {'Content-Type':'text/plain'});
-                            res.write("successful");
-                            res.end();
-                            return;
+                        
+                        if(serverTools.serverValidateRegister(email, password, name)){
+                            //email, password and name are valid
+                            connection = mysql.createConnection(connectionDetails);
+                            let strname = name+"";
+                            let stremail = email+"";
+                            let strpassword = password+"";
+                            connection.query("INSERT INTO users(email, password, name, profile_picture) VALUES(?,?,?,?)",[stremail,strpassword,strname, image],(error1,result1)=>{
+                                connection.end();
+                                if(error1){
+                                    res.writeHead(500, {'Content-Type':'text/plain'});
+                                    res.write("User already exists");
+                                    res.end();
+                                    return;
+                                }
+                                if(result1.affectedRows == 1){
+                                    res.writeHead(200, {'Content-Type':'text/plain'});
+                                    res.write("successful");
+                                    res.end();
+                                    return;
+                                }
+                                else{
+                                    res.writeHead(500, {'Content-Type':'text/plain'});
+                                    res.write("The user wasn't created");
+                                    res.end();
+                                    return;
+                                }
+                            });
                         }
                         else{
-                            res.writeHead(500, {'Content-Type':'text/plain'});
-                            res.write("The user wasn't created");
+                            //email, password and name are not valid
+                            res.writeHead(400, {'Content-Type':'text/plain'});
+                            res.write("invalid email / password / name.");
                             res.end();
                             return;
                         }
+                        
                     });
-                }
-                else{
-                    //email, password and name are not valid
-                    res.writeHead(400, {'Content-Type':'text/plain'});
-                    res.write("invalid email / password / name.");
-                    res.end();
-                    return;
                 }
             }
 
@@ -192,7 +204,7 @@ function verifyLogin(res, connection, successCallback){ //responsible for verify
 }
 
 function pullContacts(res,messages, lastId, connection){ //resposible for pulling the contact by the most relevent contacts
-    connection.query("SELECT table1.sender as email, users.name FROM (SELECT MAX(time) AS last_message_time, sender AS sender FROM messages WHERE sender=? OR recipient=? GROUP BY sender) AS table1 INNER JOIN users ON users.email = table1.sender ORDER BY last_message_time DESC;", [email, email], (error1, result1)=>{
+    connection.query("SELECT table1.sender as email, users.name, users.profile_picture FROM (SELECT MAX(time) AS last_message_time, sender AS sender FROM messages WHERE sender=? OR recipient=? GROUP BY sender) AS table1 INNER JOIN users ON users.email = table1.sender ORDER BY last_message_time DESC;", [email, email], (error1, result1)=>{
         connection.end();
         if(error1){
             res.writeHead(500, {'Content-Type': 'text/plain'});

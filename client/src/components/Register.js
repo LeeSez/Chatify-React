@@ -1,13 +1,23 @@
 import React from "react";
-import {sendHttpGetRequest} from "../clientTools";
+import {sendHttpPostRequest, sendHttpGetRequest} from "../clientTools";
 
 export default class Register extends React.Component{
     constructor(props){
         super(props);
         this.buttonRef = React.createRef(null);
+        this.imageDisplay = React.createRef(null);
     }
 
-
+    renderImage = (event)=>{
+        const reader = new FileReader();
+        reader.addEventListener("load", ()=>{
+            let uploadedImage = reader.result;
+            console.log(uploadedImage);
+            this.imageDisplay.current.style.backgroundImage = `url(${uploadedImage})`;
+            this.setState({profileImage:uploadedImage});
+        });
+        reader.readAsDataURL(event.target.files[0]);
+    };
 
     state={
         passwordRepeat:"",
@@ -19,7 +29,8 @@ export default class Register extends React.Component{
             email:true,
             name:true
         },
-        serverMessage:""
+        serverMessage:"",
+        profileImage:""
     }
 
     style = {
@@ -57,7 +68,15 @@ export default class Register extends React.Component{
         if(this.props.email.includes("@") && this.props.email.length > 7 && this.props.email.length < 40){
             if(this.state.name.length > 2 && this.state.name.length < 20){
                 if(this.props.password === this.state.passwordRepeat && this.props.password.length > 7 && this.props.password.length < 45 && /[A-Z]/.test(this.props.password)){
-                    sendHttpGetRequest(this.props.baseUrl+"api/register?email="+this.props.email+"&password="+this.props.password+"&name="+this.state.name,
+                    
+                    let body = {
+                        email:this.props.email,
+                        password:this.props.password,
+                        name:this.state.name,
+                        image:this.state.profileImage
+                    }
+
+                    sendHttpPostRequest(this.props.baseUrl+"api/register", JSON.stringify(body), 
                     (response)=>{
                         this.buttonRef.current.disabled = false;
                         this.setState({serverMessage:""});
@@ -74,8 +93,7 @@ export default class Register extends React.Component{
                             this.setState({serverMessage:response});
                             return;
                         }
-                    }
-                    );
+                    });
                     this.setState((prevVal)=>{
                         return ({
                             ...prevVal,
@@ -137,12 +155,15 @@ export default class Register extends React.Component{
         return(
             <div id="register" className="flexCol">
                 <div className="flexCol">
-                    <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} style={this.style.email}></input>
-                    <small>{this.state.parameters.email}</small>
-                    
+                    <div id="displayImage" ref={this.imageDisplay}></div>
+                    <input className="imageUpload" type="file" accept="image/png, image/jpeg" onChange={this.renderImage}/>
+
                     <input name="name" type="text" placeholder="Name" onChange={this.setName} style={this.style.name}></input>
                     <small>{this.state.parameters.name}</small>
                     
+                    <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} style={this.style.email}></input>
+                    <small>{this.state.parameters.email}</small>
+
                     <input name="password" type="password" placeholder="Password" onChange={this.props.setPassword} style={this.style.password}></input>
                     <small>{this.state.parameters.password}</small>
                     

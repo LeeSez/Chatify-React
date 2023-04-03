@@ -6,6 +6,10 @@ export default class Contact extends React.Component{
         super(props);
     }
 
+    style={
+        backgroundImage:this.props.contact.profile_picture == "" ? "" :`url(${this.props.contact.profile_picture})`
+    }
+
     render(){
         let time = new Date(this.props.contact.lastmessage.time);
         let now = new Date(Date.now());
@@ -17,7 +21,7 @@ export default class Contact extends React.Component{
 
         return(
             <div className="contact flexRow" id={this.props.contact.email} onClick={this.props.setOpenChat}>
-                <div className="recipientImage"></div>
+                <div className="recipientImage" style={this.style}></div>
                 <div className="recipientWrap">
                     <div className="flexRow nameRow">
                         <p className="contactName">{this.props.contact.name}</p>

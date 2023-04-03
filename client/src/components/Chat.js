@@ -46,11 +46,15 @@ export default class Chat extends React.Component {
         this.openVisualChat();
     }
 
+    style={
+        backgroundImage:this.props.profile_picture == "" ? "" :`url(${this.props.profile_picture})`
+    }
+
     render(){
         return (
             <div className="chat flexCol">
                 <div className="top flexRow">
-                    <div className="recipientImage"></div>
+                    <div className="recipientImage" style={this.style}></div>
                     <p>{this.props.recipientName}</p>
                     <div id="back" onClick={()=>this.props.setOpenChat("")}></div>
                 </div>
