@@ -25,6 +25,7 @@ export default class Login extends React.Component{
                 resopnse = JSON.parse(resopnse);
                 this.props.setContacts(resopnse.contacts);
                 this.props.setMessages(resopnse.messages);
+                this.props.setPersonalInfo(resopnse.presonalInfo);
                 this.props.setIsLogged();
             }
         });

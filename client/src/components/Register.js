@@ -8,17 +8,6 @@ export default class Register extends React.Component{
         this.imageDisplay = React.createRef(null);
     }
 
-    renderImage = (event)=>{
-        const reader = new FileReader();
-        reader.addEventListener("load", ()=>{
-            let uploadedImage = reader.result;
-            console.log(uploadedImage);
-            this.imageDisplay.current.style.backgroundImage = `url(${uploadedImage})`;
-            this.setState({profileImage:uploadedImage});
-        });
-        reader.readAsDataURL(event.target.files[0]);
-    };
-
     state={
         passwordRepeat:"",
         name:"",
@@ -38,6 +27,16 @@ export default class Register extends React.Component{
         name:this.state.valid.name == false ? {borderBottom:"2px solid var(--red)"} : {},
         password:this.state.valid.password == false ? {borderBottom:"2px solid var(--red)"} : {}
     }
+
+    renderImage = (event)=>{
+        const reader = new FileReader();
+        reader.addEventListener("load", ()=>{
+            let uploadedImage = reader.result;
+            this.imageDisplay.current.style.backgroundImage = `url(${uploadedImage})`;
+            this.setState({profileImage:uploadedImage})
+        });
+        reader.readAsDataURL(event.target.files[0]);
+    };
 
     componentDidMount(){
         if(this.state.refresh == 0){

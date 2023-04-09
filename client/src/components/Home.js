@@ -4,6 +4,7 @@ import Chat from "./Chat";
 import Logo from "./Logo";
 import Footer from "./Footer";
 import {sendHttpGetRequest, concatAnyArray} from "../clientTools";
+import EditProfile from "./EditProfile";
 
 export default class Home extends React.Component{
     constructor(props){
@@ -12,7 +13,12 @@ export default class Home extends React.Component{
 
     state={
         contactsElements:[],
-        openChat: ""
+        openChat: "",
+        openPage: "",
+    }
+
+    setOpenPage = (val)=>{ 
+        this.setState({openPage:val});
     }
 
     setOpenChat = (val)=>{ 
@@ -33,6 +39,7 @@ export default class Home extends React.Component{
                 let newMessages = concatAnyArray(this.props.messages, resopnse.messages, true);
                 this.props.setContacts(resopnse.contacts);
                 this.props.setMessages(newMessages);
+                this.props.setPersonalInfo(resopnse.presonalInfo);
                 this.setState({contactsElements:this.props.contacts.map((val)=> <Contact key={val.email} contact={val} email={this.props.email} setOpenChat={()=>this.setOpenChat(val.email)}/>)});
             }
             if(this.props.isLogged) setTimeout(this.refresh, 500);
@@ -45,21 +52,27 @@ export default class Home extends React.Component{
             contact = this.props.contacts.find((element) => element.email==this.state.openChat);
             contactName = contact.name;
             contactImage = contact.profile_picture;
-            //contactName = this.props.contacts[contactName].name;
         }
+
         return(
             <div id="home" className="flexCol">
                 {this.state.openChat == "" ?
-                <div className="flexCol">
-                    <div className="flexRow titleWrapper">
-                        <Logo size="small"/>
-                        <p className="title flexRow homeTitle">CHATS</p>
+                    this.state.openPage == "" ?
+                    <div className="flexCol">
+                        <div className="flexRow titleWrapper">
+                            <Logo size="small"/>
+                            <p className="title flexRow homeTitle">CHATS</p>
+                        </div>
+                        <div className="flexCol contactList">
+                            {this.state.contactsElements}
+                        </div>
+                        <Footer setOpenPage={this.setOpenPage}/>
                     </div>
-                    <div className="flexCol contactList">
-                        {this.state.contactsElements}
-                    </div>
-                    <Footer />
-                </div>
+                    :<EditProfile 
+                    personalInfo={this.props.personalInfo}
+                    setOpenPage={this.setOpenPage}
+                    />
+
                 : <Chat 
                 recipient={this.state.openChat}
                 recipientName={contactName} 

@@ -17,7 +17,7 @@ export default class Introduction extends React.Component {
     }
     render(){
         return(
-            <div id="intro" className="flexCol">
+            <div id="intro" className="flexCol flexEnd">
                 
                 {this.state.page== "empty" ?
                 <div id="introLogo">
@@ -42,6 +42,7 @@ export default class Introduction extends React.Component {
                 setIsLogged={this.props.setIsLogged}
                 setContacts={this.props.setContacts}
                 setMessages={this.props.setMessages}
+                setPersonalInfo={this.props.setPersonalInfo}
                 setPage={()=>this.setPage("register")}/>}
 
                 {this.state.page === "register" && 

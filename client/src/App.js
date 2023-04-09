@@ -15,7 +15,8 @@ export default class App extends React.Component {
     email:"",
     password:"",
     contacts:[],
-    messages:[]
+    messages:[],
+    personalInfo:{}
   };
 
   setEmail = (event)=>{
@@ -40,6 +41,10 @@ export default class App extends React.Component {
     this.setState({messages:messArray});
   }
 
+  setPersonalInfo = (personal)=>{
+    this.setState({personalInfo:personal});
+  }
+
   render(){
     return (
       <div className="App">
@@ -51,8 +56,10 @@ export default class App extends React.Component {
         baseUrl={this.baseUrl}
         setContacts={this.setContacts}
         setMessages={this.setMessages}
+        setPersonalInfo={this.setPersonalInfo}
         messages={this.state.messages}
         contacts={this.state.contacts}
+        personalInfo={this.state.personalInfo}
         isLogged={this.state.isLoggedin}
         /> : 
         
@@ -65,6 +72,7 @@ export default class App extends React.Component {
         setContacts={this.setContacts}
         setMessages={this.setMessages}
         setIsLogged={this.setIsLogged}
+        setPersonalInfo={this.setPersonalInfo}
         />}
       </div>
     );

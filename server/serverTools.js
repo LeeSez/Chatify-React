@@ -54,11 +54,13 @@ exports.readPostBody = (req, callback)=>{
 }
 
 exports.serverValidateRegister =(email, password, name)=>{
-    if(email.length>40 && email.length<7 && password.length<6 && password.length>45 && name>20 && name.length>2) return false;
-    if(email.includes(" ")) return false;
-    if(!email.includes("@")) return false;
-    if(!(/[A-Z]/.test(password))) return false;
-    if(!(/[1-9]/.test(password))) return false;
+    if(email && (email.length>40 && email.length<7)) return false; 
+    if(password && (password.length<6 && password.length>45)) return false; 
+    if(name && (name>20 && name.length>2)) return false;
+    if(email && email.includes(" ")) return false;
+    if(email && !email.includes("@")) return false;
+    if(password && !(/[A-Z]/.test(password))) return false;
+    if(password && !(/[1-9]/.test(password))) return false;
     return true;
 }
 

@@ -3,6 +3,7 @@ let url = require('url');
 let http = require('http');
 let mysql = require('mysql');
 let serverTools = require('./serverTools');
+const { log } = require('console');
 
 let connectionDetails = {
     host: "localhost",
@@ -152,6 +153,45 @@ http.createServer((req, res)=>{
                     });
                 }
             }
+
+            if(path.startsWith("/updateUser")){ //updates user information
+                let newName = reqUrl.query.newName;
+                let newPassword = reqUrl.query.newPassword;
+                let newImage = reqUrl.query.newImage;
+
+                if(newImage || newName || newPassword){
+                    let updateStr = newName ? "name='"+newName+"'," : "";
+                    updateStr += newPassword ? "password='"+password+"'," : "";
+                    updateStr += newImage ? "profile_picture='"+newImage+"'" : "";
+                    if(updateStr[updateStr.length-1] == ",") updateStr = updateStr.substring(0,updateStr.length-1);
+
+                    if(serverTools.serverValidateRegister(false,newPassword ? newPassword : false, newName ? newName : false)){
+                        let connection = mysql.createConnection(connectionDetails);
+                        verifyLogin(res,connection,(connection)=>{
+                            if(newName){
+                                connection.query("UPDATE users SET "+updateStr+" WHERE email=?",[email],(error,result)=>{
+                                    connection.end();
+                                    if(error){
+                                        res.writeHead(500, {'Content-Type':'text/plain'});
+                                        res.write("could not update user's detailes");
+                                        res.end();
+                                        return;
+                                    }
+                                    res.writeHead(200, {'Content-Type':'text/plain'});
+                                    res.end();
+                                    return;
+                                });
+                            }
+                        });
+                    }
+                }
+                else{
+                    res.writeHead(200, {'Content-Type':'text/plain'});
+                    res.write("nothing needed to change");
+                    res.end();
+                }
+                
+            }
         }
 
         else{
@@ -213,7 +253,9 @@ function pullContacts(res,messages, lastId, connection){ //resposible for pullin
             return;
         }
         let indexOfMyEmail = findIndexByfield("email", email, result1);
-        indexOfMyEmail == -1 ? "" :result1.splice(indexOfMyEmail,1);
+        let myDetailes = {};
+        if(indexOfMyEmail != -1)
+            myDetailes = result1.splice(indexOfMyEmail,1);
 
         for(let i = 0; i<result1.length; i++){
             let lastmessage = serverTools.findLast(messages,(mess) =>{return (mess.sender==result1[i].email || mess.recipient==result1[i].email)});
@@ -223,6 +265,7 @@ function pullContacts(res,messages, lastId, connection){ //resposible for pullin
         let newMessages = messages.filter((message)=>message.id>lastId);
 
         let response = {
+            presonalInfo:myDetailes[0],
             contacts:result1,
             messages:newMessages
         };
