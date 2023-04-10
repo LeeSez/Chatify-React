@@ -70,7 +70,7 @@ textarea:focus{
     
     background-position: 0% 60%;
     
-    background-image: url("../public/images/logoBackground.jpg");
+    background-image: url("./images/logoBackground.jpg");
     width: 100vw;
 }
 .smallBack{
@@ -91,7 +91,7 @@ textarea:focus{
     background-repeat: no-repeat;
     background-size:cover;
     font-size:max(1.7rem, 30px);
-    background-image: url("../public/images/SmallC.jpg");
+    background-image: url("./images/SmallC.jpg");
     background-position: -5px -4px;
 
     width: inherit;
@@ -260,7 +260,7 @@ textarea:focus{
     border-radius: 50%;
     border: 2px solid #ECECEC;
 
-    background-image: url("../public/images/user\ \(1\).png");
+    background-image: url("./images/user\ \(1\).png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -421,7 +421,7 @@ textarea:focus{
 
     border: none;
 
-    background-image: url("../public/images/send.png");
+    background-image: url("./images/send.png");
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -473,6 +473,41 @@ textarea:focus{
     background-color: white;
     border:2px solid var(--black) !important;
 }
+
+
+/* success */
+.success{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: #26262661;
+}
+.check{
+    width: 20vw;
+    animation-name: tap;
+    animation-duration: 0.7s;
+    animation-iteration-count: 1;
+}
+
+@keyframes tap{
+    0%{
+        width: 20vw;
+    }
+    30%{
+        width: 40vw;
+    }
+    80%{
+        width: 15vw;
+    }
+    100%{
+        width:20vw;
+    }
+}
+
 
 /* Side Classes */
 .flexRow {

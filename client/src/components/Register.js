@@ -1,5 +1,6 @@
 import React from "react";
 import {sendHttpPostRequest, sendHttpGetRequest} from "../clientTools";
+import Success from "./Success";
 
 export default class Register extends React.Component{
     constructor(props){
@@ -19,7 +20,8 @@ export default class Register extends React.Component{
             name:true
         },
         serverMessage:"",
-        profileImage:""
+        profileImage:"",
+        success:false
     }
 
     style = {
@@ -80,8 +82,12 @@ export default class Register extends React.Component{
                         this.buttonRef.current.disabled = false;
                         this.setState({serverMessage:""});
                         if(response == "successful"){
-                            this.props.setPage();
-                            return;
+                            this.setState({success:true});
+                            setTimeout(()=>{
+                                this.setState({success:false});
+                                this.props.setPage(); 
+                                return;
+                            },900); 
                         }
                     },
                     (status,response)=>{
@@ -153,6 +159,8 @@ export default class Register extends React.Component{
     render(){
         return(
             <div id="register" className="flexCol">
+                {this.state.success ? <Success /> : ""}
+
                 <div className="flexCol">
                     <div id="displayImage" ref={this.imageDisplay}></div>
                     <input className="imageUpload" type="file" accept="image/png, image/jpeg" onChange={this.renderImage}/>

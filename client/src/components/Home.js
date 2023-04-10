@@ -30,7 +30,8 @@ export default class Home extends React.Component{
     }
 
     refresh = ()=>{
-        sendHttpGetRequest(this.props.baseUrl+"api/pull?email="+this.props.email+"&password="+this.props.password+"&lastId="+this.props.messages[this.props.messages.length-1].id, (resopnse)=>{
+        let lastId = this.props.messages.length > 0 ? this.props.messages[this.props.messages.length-1].id : 0;
+        sendHttpGetRequest(this.props.baseUrl+"api/pull?email="+this.props.email+"&password="+this.props.password+"&lastId="+lastId, (resopnse)=>{
             if(resopnse=== "wrong detailes"){
                 console.log(resopnse);
             }
@@ -64,13 +65,16 @@ export default class Home extends React.Component{
                             <p className="title flexRow homeTitle">CHATS</p>
                         </div>
                         <div className="flexCol contactList">
-                            {this.state.contactsElements}
+                            {this.state.contactsElements.length > 0 ? this.state.contactsElements : "There are no chats yet"}
                         </div>
                         <Footer setOpenPage={this.setOpenPage}/>
                     </div>
                     :<EditProfile 
                     personalInfo={this.props.personalInfo}
                     setOpenPage={this.setOpenPage}
+                    email={this.props.email}
+                    password={this.props.password}
+                    baseUrl={this.props.baseUrl}
                     />
 
                 : <Chat 

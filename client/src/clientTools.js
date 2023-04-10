@@ -29,7 +29,9 @@ export function sendHttpPostRequest(url,body,callback, errorCallback){
             }
             else{
                 console.log("exited on:"+httpRequest.status+", and the server said:"+httpRequest.response);
-                errorCallback(httpRequest.response);
+                if(errorCallback){
+                    errorCallback(httpRequest.response);
+                }
             }
         }
     };

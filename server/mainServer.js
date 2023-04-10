@@ -155,45 +155,54 @@ http.createServer((req, res)=>{
             }
 
             if(path.startsWith("/updateUser")){ //updates user information
-                let newName = reqUrl.query.newName;
-                let newPassword = reqUrl.query.newPassword;
-                let newImage = reqUrl.query.newImage;
+                if(req.method == "POST"){
+                    serverTools.readPostBody(req, (strBody)=>{
+                        let body = JSON.parse(strBody);
+                        
+                        email = body.email;
+                        password = body.password;
+                        let newName = body.newName;
+                        let newPassword = body.newPassword;
+                        let newImage = body.newImage;
 
-                if(newImage || newName || newPassword){
-                    let updateStr = newName ? "name='"+newName+"'," : "";
-                    updateStr += newPassword ? "password='"+password+"'," : "";
-                    updateStr += newImage ? "profile_picture='"+newImage+"'" : "";
-                    if(updateStr[updateStr.length-1] == ",") updateStr = updateStr.substring(0,updateStr.length-1);
+                        if(!newName && !newPassword && !newImage){
+                            res.writeHead(400, {'Content-Type':'text/plain'});
+                            res.write("nothing needed to update in the user profile");
+                            res.end();
+                            return;
+                        }
 
-                    if(serverTools.serverValidateRegister(false,newPassword ? newPassword : false, newName ? newName : false)){
-                        let connection = mysql.createConnection(connectionDetails);
-                        verifyLogin(res,connection,(connection)=>{
-                            if(newName){
-                                connection.query("UPDATE users SET "+updateStr+" WHERE email=?",[email],(error,result)=>{
-                                    connection.end();
-                                    if(error){
-                                        res.writeHead(500, {'Content-Type':'text/plain'});
-                                        res.write("could not update user's detailes");
-                                        res.end();
-                                        return;
-                                    }
-                                    res.writeHead(200, {'Content-Type':'text/plain'});
+                        connection = mysql.createConnection(connectionDetails);
+
+                        verifyLogin(res,connection, (connection)=>{
+                            let updateStr = newName ? "name='"+newName+"'," : "";
+                            updateStr += newPassword ? "password='"+password+"'," : "";
+                            updateStr += newImage ? "profile_picture='"+newImage+"'" : "";
+                            if(updateStr[updateStr.length-1] == ",") updateStr = updateStr.substring(0,updateStr.length-1);
+
+                            connection.query("UPDATE users SET "+updateStr+" WHERE email=?",[email],(error,result)=>{
+                                connection.end();
+                                if(error){
+                                    res.writeHead(500, {'Content-Type':'text/plain'});
+                                    res.write("could not update user's detailes");
                                     res.end();
                                     return;
-                                });
-                            }
+                                }
+                                res.writeHead(200, {'Content-Type':'text/plain'});
+                                res.end();
+                                return;
+                            });
                         });
-                    }
+                    });
                 }
                 else{
-                    res.writeHead(200, {'Content-Type':'text/plain'});
-                    res.write("nothing needed to change");
+                    res.writeHead(400, {'Content-Type':'text/plain'});
+                    res.write("wrong request method used in while trying to update the user details");
                     res.end();
+                    return;
                 }
-                
             }
         }
-
         else{
             res.writeHead(400, {'Content-Type':'text/plain'});
             res.write("please pass on both email and password or choose the correct request method");
