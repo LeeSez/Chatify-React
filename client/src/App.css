@@ -360,7 +360,7 @@ textarea:focus{
     width:32px;
     height:32px;
 
-    background-image: url("../public/images/back.png");
+    background-image: url("./images/back.png");
 }
 
 

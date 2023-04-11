@@ -254,34 +254,54 @@ function verifyLogin(res, connection, successCallback){ //responsible for verify
 
 function pullContacts(res,messages, lastId, connection){ //resposible for pulling the contact by the most relevent contacts
     connection.query("SELECT table1.sender as email, users.name, users.profile_picture FROM (SELECT MAX(time) AS last_message_time, sender AS sender FROM messages WHERE sender=? OR recipient=? GROUP BY sender) AS table1 INNER JOIN users ON users.email = table1.sender ORDER BY last_message_time DESC;", [email, email], (error1, result1)=>{
-        connection.end();
+        
+        let finishilizing = ()=>{
+            for(let i = 0; i<result1.length; i++){
+                let lastmessage = serverTools.findLast(messages,(mess) =>{return (mess.sender==result1[i].email || mess.recipient==result1[i].email)});
+                result1[i].lastmessage = lastmessage;
+            }
+
+            let newMessages = messages.filter((message)=>message.id>lastId);
+
+            let response = {
+                presonalInfo:myDetailes,
+                contacts:result1,
+                messages:newMessages
+            };
+
+            res.writeHead(200, {'Content-Type':'application/JSON'});
+            res.end(JSON.stringify(response));
+            return;
+        }
+
         if(error1){
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.write("run into problem while trying to query the database");
             res.end();
             return;
         }
+
         let indexOfMyEmail = findIndexByfield("email", email, result1);
         let myDetailes = {};
-        if(indexOfMyEmail != -1)
+        if(indexOfMyEmail != -1){
             myDetailes = result1.splice(indexOfMyEmail,1);
-
-        for(let i = 0; i<result1.length; i++){
-            let lastmessage = serverTools.findLast(messages,(mess) =>{return (mess.sender==result1[i].email || mess.recipient==result1[i].email)});
-            result1[i].lastmessage = lastmessage;
+            myDetailes = myDetailes[0];
+            connection.end();
+            finishilizing();
         }
-
-        let newMessages = messages.filter((message)=>message.id>lastId);
-
-        let response = {
-            presonalInfo:myDetailes[0],
-            contacts:result1,
-            messages:newMessages
-        };
-
-        res.writeHead(200, {'Content-Type':'application/JSON'});
-        res.end(JSON.stringify(response));
-        return;
+        else{
+            // email not found or there might be no messages an therefor no contacts.
+            connection.query("SELECT * FROM users WHERE email=?",[email],(error2,result2)=>{
+                connection.end();
+                if(error2){
+                    res.writeHead(200,{'Content-Type':'text/plain'});
+                    res.write("the server encountered an issue while trying to retrive the users information");
+                    res.end();
+                }
+                myDetailes = result2[0];
+                finishilizing();
+            });
+        }
     });
 }
 
