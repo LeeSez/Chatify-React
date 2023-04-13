@@ -5,16 +5,25 @@ import Logo from "./Logo";
 import Footer from "./Footer";
 import {sendHttpGetRequest, concatAnyArray} from "../clientTools";
 import EditProfile from "./EditProfile";
+import MainSetting from "./MainSetting";
 
 export default class Home extends React.Component{
     constructor(props){
         super(props);
+        this.refreshTime = "";
+        this.stop = false;
+        this.setting = [
+            {name:"Notifications", action:""},
+            {name:"Log out", action:this.logout}
+        ];
     }
 
     state={
         contactsElements:[],
         openChat: "",
         openPage: "",
+        openSetting: false,
+        clear:false
     }
 
     setOpenPage = (val)=>{ 
@@ -23,6 +32,11 @@ export default class Home extends React.Component{
 
     setOpenChat = (val)=>{ 
         this.setState({openChat:val});
+    }
+
+    setOpenSetting = ()=>{
+        let currentVal = this.state.openSetting;
+        this.setState({openSetting:!currentVal});
     }
 
     componentDidMount(){
@@ -41,25 +55,35 @@ export default class Home extends React.Component{
                 this.props.setContacts(resopnse.contacts);
                 this.props.setMessages(newMessages);
                 this.props.setPersonalInfo(resopnse.presonalInfo);
-                this.setState({contactsElements:this.props.contacts.map((val)=> <Contact key={val.email} contact={val} email={this.props.email} setOpenChat={()=>this.setOpenChat(val.email)}/>)});
+                this.setState({contactsElements:this.props.contacts.map((val)=> <Contact key={val.email} contact={val} email={this.props.email} setOpenChat={()=>this.setOpenChat(val)}/>)});
             }
-            if(this.props.isLogged) setTimeout(this.refresh, 500);
+            if(!this.stop) this.refreshTime = setTimeout(this.refresh, 500);
+            else clearTimeout(this.refreshTime);
         });
     }
 
+    logout = ()=>{
+        this.stop = true;
+        this.setState({
+            contactsElements:[],
+            openChat: "",
+            openPage: "",
+            openSetting: false,
+        });
+        this.props.resetState();
+    };
+
     render(){
-        let contact, contactName, contactImage;
-        if(this.state.openChat != "" && this.props.contacts){
-            contact = this.props.contacts.find((element) => element.email==this.state.openChat);
-            contactName = contact.name;
-            contactImage = contact.profile_picture;
-        }
 
         return(
             <div id="home" className="flexCol">
+
                 {this.state.openChat == "" ?
                     this.state.openPage == "" ?
                     <div className="flexCol">
+
+                        {this.state.openSetting && <MainSetting options={this.setting}/>}
+
                         <div className="flexRow titleWrapper">
                             <Logo size="small"/>
                             <p className="title flexRow homeTitle">CHATS</p>
@@ -67,8 +91,9 @@ export default class Home extends React.Component{
                         <div className="flexCol contactList">
                             {this.state.contactsElements.length > 0 ? this.state.contactsElements : "There are no chats yet"}
                         </div>
-                        <Footer setOpenPage={this.setOpenPage}/>
+                        <Footer setOpenPage={this.setOpenPage} openSetting={this.setOpenSetting}/>
                     </div>
+
                     :<EditProfile 
                     personalInfo={this.props.personalInfo}
                     setOpenPage={this.setOpenPage}
@@ -78,9 +103,9 @@ export default class Home extends React.Component{
                     />
 
                 : <Chat 
-                recipient={this.state.openChat}
-                recipientName={contactName} 
-                profile_picture={contactImage}
+                recipient={this.state.openChat.email}
+                recipientName={this.state.openChat.name} 
+                profile_picture={this.state.openChat.profile_picture}
                 messages={this.props.messages} 
                 setOpenChat={this.setOpenChat}
                 email={this.props.email}

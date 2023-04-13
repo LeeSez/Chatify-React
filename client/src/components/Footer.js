@@ -8,7 +8,7 @@ export default class Footer extends React.Component{
         return (
             <footer>
                 <div className="footerButtons flexRow">
-                    <div className="flexCol"><img src={sp}/></div>
+                    <div className="flexCol" onClick={()=>this.props.openSetting()}><img src={sp}/></div>
                     <div className="flexCol" onClick={()=>this.props.setOpenPage("editPage")}><img src={user}/></div>
                     <div className="flexCol"><img src={search}/></div>
                 </div>

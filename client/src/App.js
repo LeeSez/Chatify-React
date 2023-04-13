@@ -45,6 +45,17 @@ export default class App extends React.Component {
     this.setState({personalInfo:personal});
   }
 
+  resetState = ()=>{
+    this.setState({
+      isLoggedin:false,
+      email:"",
+      password:"",
+      contacts:[],
+      messages:[],
+      personalInfo:{}
+    });
+  }
+
   render(){
     return (
       <div className="App">
@@ -61,6 +72,7 @@ export default class App extends React.Component {
         contacts={this.state.contacts}
         personalInfo={this.state.personalInfo}
         isLogged={this.state.isLoggedin}
+        resetState={this.resetState}
         /> : 
         
         <Introduction 

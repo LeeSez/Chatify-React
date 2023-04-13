@@ -75,3 +75,41 @@ export function formateTime(number){
     return number;
 }
 
+export function convertMonth(number){
+    if(number==0){
+        return "Jan"
+    }
+    if(number==1){
+        return "Feb"
+    }
+    if(number==2){
+        return "Mar"
+    }
+    if(number==3){
+        return "Apr"
+    }
+    if(number==4){
+        return "May"
+    }
+    if(number==5){
+        return "Jun"
+    }
+    if(number==6){
+        return "Jul"
+    }
+    if(number==7){
+        return "Aug"
+    }
+    if(number==8){
+        return "Spet"
+    }
+    if(number==9){
+        return "Oct"
+    }
+    if(number==10){
+        return "Nov"
+    }
+    if(number==11){
+        return "Dec"
+    }
+}

@@ -253,12 +253,13 @@ textarea:focus{
     font-weight: 400;
 }
 .recipientImage{
-    min-width:12vw;
+    min-width:50px;
+    width: 17vw;
     aspect-ratio: 1 / 1;
     margin-right: 3vw;
 
     border-radius: 50%;
-    border: 2px solid #ECECEC;
+    box-shadow: 0px 3px 4px #d6d6d6;
 
     background-image: url("./images/user\ \(1\).png");
     background-repeat: no-repeat;
@@ -288,6 +289,7 @@ textarea:focus{
 
     overflow-y: scroll;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 
     justify-content: flex-start !important;
 }
@@ -335,7 +337,7 @@ textarea:focus{
 .messagesContainer{
     width: inherit;
     height: 80vh;
-    width: 80vw;
+    width: 90vw;
 
     overflow-y: scroll;
 
@@ -346,6 +348,7 @@ textarea:focus{
 }
 .myMessage{
     align-self: flex-end !important;
+    background-color: #EEF7FF !important;
 }
 .top{
     width: 100vw;
@@ -372,13 +375,15 @@ textarea:focus{
     padding: 4vw 5vw;
     padding-bottom: 2vw;
     min-width:10vw;
-    max-width: 60vw;
+    max-width: 50vw;
     width: fit-content;
     margin-top: 1vh;
 
     border-radius: 6vw;
 
     font-size: 0.75rem;
+
+    word-wrap: break-word;
 }
 .messageContent{
     margin: 0;
@@ -391,6 +396,21 @@ textarea:focus{
     margin: 0;
 
     justify-content: flex-end !important;
+}
+.timeMark{
+    align-self: center !important;
+    padding:5px 10px;
+    background-color: var(--lightGray);
+
+    margin-top: 1vh;
+    border-radius: 15px;
+    border-bottom: 1px solid #a9a9a9;
+
+    position: sticky;
+    top: 1vh;
+
+    font-size: 0.65rem;
+    font-weight: 500;
 }
 
 
@@ -492,7 +512,6 @@ textarea:focus{
     animation-duration: 0.7s;
     animation-iteration-count: 1;
 }
-
 @keyframes tap{
     0%{
         width: 20vw;
@@ -506,6 +525,32 @@ textarea:focus{
     100%{
         width:20vw;
     }
+}
+
+
+/* mainSetting */
+.settings{
+    position: absolute;
+    top: 75vh;
+    left:0vw;
+    width: 40vw;
+
+    border-radius: 20px;
+    border: 2px solid #ededed;
+    overflow: hidden;
+
+    background-color: var(--lightGray);
+}
+.settings > button{
+    height: 6vh;
+    width: inherit;
+
+    border: none;
+    border-bottom: 2px solid #ededed;
+    background-color: var(--lightGray);
+
+    font-size: 0.8rem ;
+    font-family: inherit;
 }
 
 
@@ -539,4 +584,7 @@ textarea:focus{
     position: absolute;
     top: 4vh;
     right: 4vh;
+}
+.red{
+    color: var(--red);
 }
