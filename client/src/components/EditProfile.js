@@ -1,6 +1,6 @@
 import React from "react";
 import {sendHttpGetRequest, sendHttpPostRequest} from "../clientTools";
-import Success from "./Success";
+import Load from "./Load";
 
 export default class EditProfile extends React.Component {
 
@@ -12,7 +12,8 @@ export default class EditProfile extends React.Component {
         newImage:"",
         newName:"",
         newPassword:"",
-        success:false
+        success:false,
+        loading:false
     }
 
     componentDidMount(){
@@ -26,7 +27,13 @@ export default class EditProfile extends React.Component {
             this.imageDisplay.current.style.backgroundImage = `url(${uploadedImage})`;
             this.setState({newImage:uploadedImage});
         });
-        reader.readAsDataURL(event.target.files[0]);
+        
+        let fileSize = event.target.files[0].size;
+        let fileMb = fileSize / 1024 ** 2;
+        
+        if(fileMb < 1){
+            reader.readAsDataURL(event.target.files[0]);
+        }
     };
 
     setNewName = (event)=>{
@@ -48,10 +55,11 @@ export default class EditProfile extends React.Component {
             newImage:this.state.newImage != "" ? this.state.newImage : false,
             newPassword:false
         }
+        this.setState({loading:true});
 
         sendHttpPostRequest(this.props.baseUrl+"api/updateUser",JSON.stringify(body),(response)=>{
             this.applyBtn.current.disabled = false;
-            this.setState({success:true});
+            this.setState({success:true, loading:false});
             setTimeout(()=>{this.setState({success:false});}, 900);
         });
     }
@@ -59,7 +67,9 @@ export default class EditProfile extends React.Component {
     render(){
         return (
             <div className="editProfile flexCol"> 
-                {this.state.success ? <Success /> : ""}
+                {this.state.success ? <Load success={true} loading={false} /> : ""}
+                {this.state.loading ? <Load success={false} loading={true} /> : ""}
+
                 <div id="back" className="backArrow" onClick={()=>this.props.setOpenPage("")}></div>
                 
                 <div className="flexCol">

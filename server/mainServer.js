@@ -18,16 +18,15 @@ http.createServer((req, res)=>{
     let reqUrl = url.parse(req.url, true);
     let path = reqUrl.path;
 
-    if(path.startsWith("/api")){
-        //API requests
-        res.setHeader("Access-Control-Allow-Origin","*"); //allows all http request from any origin
+    if(path.startsWith("/api")){//API requests
+        res.setHeader("Access-Control-Allow-Origin","*"); //allows all http requests from any origin
 
         if(req.method == "GET" && !path.startsWith("/api/registerParameters")){
             email = reqUrl.query.email;
             password = reqUrl.query.password;
         }
 
-        if(path.startsWith("/api/registerParameters")){
+        if(path.startsWith("/api/registerParameters")){ //getting the register parameters
             res.writeHead(200, {'Content-Type':'application/json'});
             res.write(serverTools.getParametersOfRegister());
             res.end();
@@ -46,11 +45,13 @@ http.createServer((req, res)=>{
                         email = body.email;
                         password = body.password;
                         let name = body.name;
-                        let image = body.image;
+                        let image = body.image ? body.image : "";
 
-                        if(!name || !email || !password || !image ){
+                        console.log(image.length);
+
+                        if(!name || !email || !password){
                             res.writeHead(400, {'Content-Type':'text/plain'});
-                            res.write("Insufficient information to send a message");
+                            res.write("Insufficient information to register");
                             res.end();
                             return;
                         }
@@ -202,6 +203,34 @@ http.createServer((req, res)=>{
                     return;
                 }
             }
+
+            if(path.startsWith("/search")){ //search poeple who are users too
+                let searchChar = reqUrl.query.searchChar;
+                if(searchChar && searchChar.length<40){
+                    connection = mysql.createConnection(connectionDetails);
+                    verifyLogin(res,connection, ()=>{
+                        connection.query("SELECT email, name, profile_picture FROM users WHERE name LIKE '"+searchChar+"%';",(error, result)=>{
+                            connection.end();
+                            if(error){
+                                res.writeHead(500, {'Content-Type':'text/plain'});
+                                res.write("the server encountered an issues while trying to search users");
+                                res.end();
+                                return;
+                            }
+                            res.writeHead(200, {'Content-Type':'application/json'});
+                            res.write(JSON.stringify(result));
+                            res.end();
+                            return; 
+                        });
+                    });
+                }
+                else{ 
+                    res.writeHead(400, {'Content-Type':'text/plain'});
+                    res.write("there was nothing to search for");
+                    res.end();
+                    return;
+                }
+            }
         }
         else{
             res.writeHead(400, {'Content-Type':'text/plain'});
@@ -211,8 +240,7 @@ http.createServer((req, res)=>{
         }
     }
 
-    else{
-        // static files
+    else{// static files
         serverTools.fileServer("../client",reqUrl.path,"/public/index.html", res);
     }
 
@@ -293,13 +321,4 @@ function pullContacts(res,messages, lastId, connection){ //resposible for pullin
     });
 }
 
-
-function findIndexByfield(fieldName, val, array) { //only meant to find object's position according to a spesified field and val
-    for (let i = 0; i < array.length; i++) {
-      if (array[i][fieldName] === val) {
-        return i;
-      }
-    }
-    return -1; 
-}
 

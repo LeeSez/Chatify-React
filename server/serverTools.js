@@ -84,3 +84,12 @@ exports.findLast = (array, callback)=>{
     }
     return -1;
 }
+
+exports.findIndexByfield = (fieldName, val, array)=> { //only meant to find object's position according to a spesified field and val
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][fieldName] === val) {
+        return i;
+      }
+    }
+    return -1; 
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import {sendHttpPostRequest, sendHttpGetRequest} from "../clientTools";
-import Success from "./Success";
+import Load from "./Load";
 
 export default class Register extends React.Component{
     constructor(props){
@@ -21,7 +21,8 @@ export default class Register extends React.Component{
         },
         serverMessage:"",
         profileImage:"",
-        success:false
+        success:false,
+        loading:false
     }
 
     style = {
@@ -77,8 +78,10 @@ export default class Register extends React.Component{
                         image:this.state.profileImage
                     }
 
+                    this.setState({loading:true});
                     sendHttpPostRequest(this.props.baseUrl+"api/register", JSON.stringify(body), 
                     (response)=>{
+                        this.setState({loading:false});
                         this.buttonRef.current.disabled = false;
                         this.setState({serverMessage:""});
                         if(response == "successful"){
@@ -92,6 +95,7 @@ export default class Register extends React.Component{
                     },
                     (status,response)=>{
                         //error callback
+                        this.setState({loading:false});
                         this.buttonRef.current.disabled = false;
                         if(status == 500){
                             //duplicated information
@@ -159,7 +163,8 @@ export default class Register extends React.Component{
     render(){
         return(
             <div id="register" className="flexCol">
-                {this.state.success ? <Success /> : ""}
+                {this.state.success ? <Load success={true} loading={false} /> : ""}
+                {this.state.loading ? <Load success={false} loading={true} /> : ""}
 
                 <div className="flexCol">
                     <div id="displayImage" ref={this.imageDisplay}></div>

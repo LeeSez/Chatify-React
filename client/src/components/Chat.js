@@ -18,10 +18,10 @@ export default class Chat extends React.Component {
 
                 if(lastTime != today){
                     //differnt day
-                    return [<div className="timeMark" key={index+0.5}>{today}</div>, <Message key={index} messageItSelf={message} email={this.props.email}/>]
+                    return [<div className="timeMark" key={"index"+index}>{today}</div>, <Message key={index} messageItSelf={message} email={this.props.email}/>]
                 }
                 else{
-                    return <Message key={message.id} messageItSelf={message} email={this.props.email}/>;
+                    return <Message key={index} messageItSelf={message} email={this.props.email}/>;
                 }
             }
             else{
@@ -29,7 +29,7 @@ export default class Chat extends React.Component {
                 let today = new Date(this.messagesArray[index].time);
                 today = today.getDate() + " " + convertMonth(today.getMonth());
 
-                return [<div className="timeMark" key={index+0.5}>{today}</div>, <Message key={index} messageItSelf={message} email={this.props.email}/> ];
+                return [<div className="timeMark"  key={"index"+index}>{today}</div>, <Message key={index} messageItSelf={message} email={this.props.email}/> ];
             }
         }
         this.messageElements = this.messagesArray.map((message, index) =>{
@@ -78,6 +78,10 @@ export default class Chat extends React.Component {
             return this.messageComaprison(message, index);
         });
         this.messageElements = this.messageElements.flat(Infinity);
+
+        if(this.messageScroll.current.scrollTop + 800 > this.messageScroll.current.scrollHeight){
+            this.messageScroll.current.scrollTop = this.messageScroll.current.scrollHeight;
+        }
     }
 
     style={

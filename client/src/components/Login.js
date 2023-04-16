@@ -1,5 +1,6 @@
 import React from "react";
 import {sendHttpGetRequest} from "../clientTools";
+import Load from "./Load";
 
 export default class Login extends React.Component{
     constructor(props){
@@ -7,7 +8,8 @@ export default class Login extends React.Component{
     }
 
     state = {
-        incorrect: false
+        incorrect: false,
+        loading:false
     };
 
     setIncoreect = (val)=>{
@@ -15,7 +17,10 @@ export default class Login extends React.Component{
     }
 
     verifyLoginInserver = ()=>{
+        this.setState({loading:true});
+
         sendHttpGetRequest(this.props.baseUrl+"api/login?email="+this.props.email+"&password="+this.props.password, (resopnse)=>{
+            this.setState({loading:false});
             if(resopnse=== "wrong detailes"){
                 console.log(resopnse);
                 this.setIncoreect(true);
@@ -34,6 +39,8 @@ export default class Login extends React.Component{
     render(){
         return(
             <div id="login" className="flexCol">
+                {this.state.loading==true ? <Load success={false} loading={true} /> : ""}
+
                 <div className="flexCol">
                     <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} ></input>
                     <input name="password" type="password" placeholder="Password" onChange={this.props.setPassword}></input>

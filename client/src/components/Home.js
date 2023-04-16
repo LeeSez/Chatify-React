@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import {sendHttpGetRequest, concatAnyArray} from "../clientTools";
 import EditProfile from "./EditProfile";
 import MainSetting from "./MainSetting";
+import Search from "./Search";
 
 export default class Home extends React.Component{
     constructor(props){
@@ -94,13 +95,22 @@ export default class Home extends React.Component{
                         <Footer setOpenPage={this.setOpenPage} openSetting={this.setOpenSetting}/>
                     </div>
 
-                    :<EditProfile 
-                    personalInfo={this.props.personalInfo}
-                    setOpenPage={this.setOpenPage}
-                    email={this.props.email}
-                    password={this.props.password}
-                    baseUrl={this.props.baseUrl}
-                    />
+                    :this.state.openPage == "editPage" ?
+                        <EditProfile 
+                        personalInfo={this.props.personalInfo}
+                        setOpenPage={this.setOpenPage}
+                        email={this.props.email}
+                        password={this.props.password}
+                        baseUrl={this.props.baseUrl}
+                        />
+                        :
+                        <Search 
+                        email={this.props.email}
+                        password={this.props.password}
+                        baseUrl={this.props.baseUrl}
+                        setOpenChat={this.setOpenChat}
+                        setOpenPage={this.setOpenPage}
+                        />
 
                 : <Chat 
                 recipient={this.state.openChat.email}

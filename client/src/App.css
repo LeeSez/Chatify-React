@@ -11,10 +11,13 @@
     --drakGreen:#007B68;
     --red:#E3170A;
 }
+*{
+    max-width: 100vw;
+    max-height: 100vh;
+    box-sizing: border-box;
+}
 body{
     margin:0;
-    width: 100vw;
-    height: 100vh;
 }
 input{
     border: none;
@@ -105,8 +108,8 @@ textarea:focus{
 
 /* Indroduction */
 #intro{
-    width: 100vw;
-    height: 100vh;
+    width: inherit;
+    height: inherit;
 
     justify-content: flex-end;
 }
@@ -254,7 +257,7 @@ textarea:focus{
 }
 .recipientImage{
     min-width:50px;
-    width: 17vw;
+    height: 80%;
     aspect-ratio: 1 / 1;
     margin-right: 3vw;
 
@@ -495,8 +498,8 @@ textarea:focus{
 }
 
 
-/* success */
-.success{
+/* Load */
+.load{
     position: absolute;
     top: 0;
     left: 0;
@@ -512,6 +515,13 @@ textarea:focus{
     animation-duration: 0.7s;
     animation-iteration-count: 1;
 }
+.loading{
+    width: 20vw;
+    animation-name: spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
 @keyframes tap{
     0%{
         width: 20vw;
@@ -524,6 +534,14 @@ textarea:focus{
     }
     100%{
         width:20vw;
+    }
+}
+@keyframes spin{
+    from{
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(360deg);
     }
 }
 
@@ -551,6 +569,30 @@ textarea:focus{
 
     font-size: 0.8rem ;
     font-family: inherit;
+}
+#searchList{
+    width:85vw;
+}
+
+
+/* Search */
+#search input{
+    margin: 0;
+
+    border: none;
+    
+    background-color: var(--lightGray);
+    border-radius: 40px;
+
+    text-indent: 4vw;
+}
+#search .contact{
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+}
+.inputWrap{
+    height: 12vh;
+    width: 100vw;
 }
 
 
