@@ -9,7 +9,8 @@ export default class App extends React.Component {
     super(props);
   }
 
-  baseUrl = "http://localhost:8080/";
+  /*baseUrl = "http://localhost:8080/";*/
+  baseUrl = "/";
 
   state = {
     isLoggedin:false,

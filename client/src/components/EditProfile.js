@@ -40,6 +40,10 @@ export default class EditProfile extends React.Component {
     };
 
     setNewName = (event)=>{
+        if(event.target.value.length > 20){
+            this.props.setNotification(true,"Name can not be over 20 letters long");
+            return;
+        }
         this.setState({newName:event.target.value});
     }
 
@@ -66,7 +70,8 @@ export default class EditProfile extends React.Component {
             setTimeout(()=>{this.setState({success:false});}, 900);
         },
         (status, resopnse)=>{
-            this.props.setNotification(true,"Details didnt update due to a problem in the server.");
+            this.setState({loading:false});
+            this.props.setNotification(true,resopnse);
         });
     }
 

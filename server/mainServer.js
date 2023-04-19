@@ -169,7 +169,14 @@ http.createServer((req, res)=>{
 
                         if(!newName && !newPassword && !newImage){
                             res.writeHead(400, {'Content-Type':'text/plain'});
-                            res.write("nothing needed to update in the user profile");
+                            res.write("Nothing needed to update in the user profile");
+                            res.end();
+                            return;
+                        }
+
+                        if(newName.length > 20){
+                            res.writeHead(400, {'Content-Type':'text/plain'});
+                            res.write("Name's length can not go over 20 letters");
                             res.end();
                             return;
                         }
@@ -186,7 +193,7 @@ http.createServer((req, res)=>{
                                 connection.end();
                                 if(error){
                                     res.writeHead(500, {'Content-Type':'text/plain'});
-                                    res.write("could not update user's detailes");
+                                    res.write("Could not update user's detailes due to an error in the database");
                                     res.end();
                                     return;
                                 }
@@ -242,7 +249,7 @@ http.createServer((req, res)=>{
     }
 
     else{// static files
-        serverTools.fileServer("../client",reqUrl.path,"/public/index.html", res);
+        serverTools.fileServer("./static_files",reqUrl.path,"/index.html", res);
     }
 
 }).listen(8080);
