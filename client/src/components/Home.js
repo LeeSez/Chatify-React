@@ -44,6 +44,10 @@ export default class Home extends React.Component{
         this.refresh();
     }
 
+    componentWillUnmount(){
+        clearTimeout(this.refreshTime);
+    }
+
     refresh = ()=>{
         let lastId = this.props.messages.length > 0 ? this.props.messages[this.props.messages.length-1].id : 0;
         sendHttpGetRequest(this.props.baseUrl+"api/pull?email="+this.props.email+"&password="+this.props.password+"&lastId="+lastId, (resopnse)=>{
@@ -70,7 +74,7 @@ export default class Home extends React.Component{
             openChat: "",
             openPage: "",
             openSetting: false,
-        });
+        });       
         this.props.resetState();
     };
 
@@ -79,8 +83,8 @@ export default class Home extends React.Component{
         return(
             <div id="home" className="flexCol">
 
-                {this.state.openChat == "" ?
-                    this.state.openPage == "" ?
+                {this.state.openChat === "" ?
+                    this.state.openPage === "" ?
                     <div className="flexCol">
 
                         {this.state.openSetting && <MainSetting options={this.setting}/>}
@@ -95,13 +99,15 @@ export default class Home extends React.Component{
                         <Footer setOpenPage={this.setOpenPage} openSetting={this.setOpenSetting}/>
                     </div>
 
-                    :this.state.openPage == "editPage" ?
+                    :this.state.openPage === "editPage" ?
                         <EditProfile 
                         personalInfo={this.props.personalInfo}
                         setOpenPage={this.setOpenPage}
                         email={this.props.email}
                         password={this.props.password}
                         baseUrl={this.props.baseUrl}
+                        setNotification={this.props.setNotification}
+                        notificationState={this.props.notification}
                         />
                         :
                         <Search 

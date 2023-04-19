@@ -2,8 +2,8 @@ export function sendHttpGetRequest(url,callback, errorCallback){
     let httpRequest = new XMLHttpRequest();
 
     httpRequest.onreadystatechange = ()=>{
-        if(httpRequest.readyState == 4){
-            if(httpRequest.status == 200){
+        if(httpRequest.readyState === 4){
+            if(httpRequest.status === 200){
                 callback(httpRequest.response);
             }
             else{
@@ -23,8 +23,8 @@ export function sendHttpPostRequest(url,body,callback, errorCallback){
     let httpRequest = new XMLHttpRequest();
 
     httpRequest.onreadystatechange = ()=>{
-        if(httpRequest.readyState == 4){
-            if(httpRequest.status == 200){
+        if(httpRequest.readyState === 4){
+            if(httpRequest.status === 200){
                 callback(httpRequest.response);
             }
             else{
@@ -52,7 +52,7 @@ export function concatAnyArray(array1, array2, preventDuplicates){
         newArray.push(array1[i]);
     }
     for(let i = 0; i<array2.length; i++){
-        if(preventDuplicates && !newArray.some(message => message.id == array2[i].id)) newArray.push(array2[i]);
+        if(preventDuplicates && !newArray.some(message => message.id === array2[i].id)) newArray.push(array2[i]);
         else if(!preventDuplicates) newArray.push(array2[i]);
     }
     return newArray;
@@ -75,41 +75,21 @@ export function formateTime(number){
     return number;
 }
 
-export function convertMonth(number){
-    if(number==0){
-        return "Jan"
+
+export let monthDictionary = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Spet","Oct","Nov","Dec"];
+
+export function relativeDate(today, otherday, needHour){
+    // requiers two Date objects
+    if((today.getDate() === otherday.getDate())&& (today.getMonth() === otherday.getMonth()) && (today.getFullYear() === otherday.getFullYear())){
+        let relativeDay = needHour === true? formateTime(otherday.getHours())+":"+formateTime(otherday.getMinutes()) : "Today";
+        return relativeDay;
+    } 
+    else if((otherday.getMonth() === today.getMonth()) && (otherday.getDate() + 1 === today.getDate())){ 
+        let relativeDay = "Yesterday";
+        return relativeDay;
     }
-    if(number==1){
-        return "Feb"
-    }
-    if(number==2){
-        return "Mar"
-    }
-    if(number==3){
-        return "Apr"
-    }
-    if(number==4){
-        return "May"
-    }
-    if(number==5){
-        return "Jun"
-    }
-    if(number==6){
-        return "Jul"
-    }
-    if(number==7){
-        return "Aug"
-    }
-    if(number==8){
-        return "Spet"
-    }
-    if(number==9){
-        return "Oct"
-    }
-    if(number==10){
-        return "Nov"
-    }
-    if(number==11){
-        return "Dec"
+    else{
+        let relativeDay = otherday.getDate()+ " "+ monthDictionary[otherday.getMonth()];
+        return relativeDay;
     }
 }

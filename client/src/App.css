@@ -197,7 +197,8 @@ textarea:focus{
 .imageUpload{
     border: none;
     font-size: 0.5rem;
-    width: 21vw;
+    width: 23vw;
+    
 
     margin-top: 1vh;
 }
@@ -206,6 +207,7 @@ textarea:focus{
     background-color: var(--black);
     padding: 2vw;
     border-radius: 2vw;
+
 
     color: white;
     font-family: inherit;
@@ -518,7 +520,7 @@ textarea:focus{
 .loading{
     width: 20vw;
     animation-name: spin;
-    animation-duration: 1s;
+    animation-duration: 2s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
@@ -593,6 +595,44 @@ textarea:focus{
 .inputWrap{
     height: 12vh;
     width: 100vw;
+}
+
+
+/* Notification */
+.notification{
+    background-color:#edc8c4;
+    border:1px solid #a73e3c;
+    width: 90vw;
+    min-height: 7vh;
+    border-radius: 15px;
+    padding: 3% 10%;
+
+    position: absolute;
+    bottom: 5vh;
+    left: 5vw;
+
+    z-index: 10;
+
+    color: #a73e3c;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+
+    animation-name: pop;
+    animation-duration: 700ms;
+}
+.notification > * {
+    margin: 0;
+}
+@keyframes pop{
+    0%{
+        bottom: -10vh;
+    }
+    60%{
+        bottom: 10vh;
+    }
+    100%{
+        bottom: 5vh;
+    }
 }
 
 

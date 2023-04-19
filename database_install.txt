@@ -1,0 +1,4 @@
+inorder to create the datebase using workbench, 
+you need to select the server lable from the to meun option bar, 
+and selcet " Data Import ", 
+make sure to refer workbeanch to the file I have attached in the main folder called database.sql

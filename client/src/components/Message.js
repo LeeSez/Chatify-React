@@ -2,13 +2,10 @@ import React from "react";
 import { formateTime } from "../clientTools"; 
 
 export default class Message extends React.Component {
-    constructor(props){
-        super(props);
-    }
 
     render(){
         let classy = "message";
-        if(this.props.messageItSelf.sender == this.props.email){
+        if(this.props.messageItSelf.sender === this.props.email){
             classy = "message myMessage";
         }
 

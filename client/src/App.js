@@ -2,6 +2,7 @@ import './App.css';
 import React from "react"
 import Introduction from "./components/Introduction";
 import Home from "./components/Home";
+import Notification from './components/Notification';
 
 export default class App extends React.Component {
   constructor(props){
@@ -16,11 +17,19 @@ export default class App extends React.Component {
     password:"",
     contacts:[],
     messages:[],
-    personalInfo:{}
+    personalInfo:{},
+    notification:false,
+    errorMessage:""
   };
 
+  setNotification = (val, message)=>{
+    this.setState({notification:val, errorMessage:message});
+  }
+
   setEmail = (event)=>{
-    this.setState({email:event.target.value});
+    let lower = event.target.value;
+    lower =lower.toLowerCase();
+    this.setState({email:lower});
   }
 
   setPassword = (event)=>{
@@ -59,6 +68,10 @@ export default class App extends React.Component {
   render(){
     return (
       <div className="App">
+        {this.state.notification === true && <Notification 
+        message={this.state.errorMessage}
+        setNotification={this.setNotification}
+        />}
         {this.state.isLoggedin ? 
         
         <Home 
@@ -73,6 +86,8 @@ export default class App extends React.Component {
         personalInfo={this.state.personalInfo}
         isLogged={this.state.isLoggedin}
         resetState={this.resetState}
+        setNotification={this.setNotification}
+        notificationState={this.state.notification}
         /> : 
         
         <Introduction 
@@ -85,6 +100,8 @@ export default class App extends React.Component {
         setMessages={this.setMessages}
         setIsLogged={this.setIsLogged}
         setPersonalInfo={this.setPersonalInfo}
+        setNotification={this.setNotification}
+        notificationState={this.state.notification}
         />}
       </div>
     );

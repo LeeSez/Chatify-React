@@ -4,9 +4,6 @@ import Register from "./Register";
 import Logo from "./Logo";
 
 export default class Introduction extends React.Component {
-    constructor(props){
-        super((props));
-    }
 
     state = {
         page:"empty"
@@ -19,7 +16,7 @@ export default class Introduction extends React.Component {
         return(
             <div id="intro" className="flexCol flexEnd">
                 
-                {this.state.page== "empty" ?
+                {this.state.page=== "empty" ?
                 <div id="introLogo">
                     <Logo size="big"/>
                 </div> :
@@ -43,7 +40,10 @@ export default class Introduction extends React.Component {
                 setContacts={this.props.setContacts}
                 setMessages={this.props.setMessages}
                 setPersonalInfo={this.props.setPersonalInfo}
-                setPage={()=>this.setPage("register")}/>}
+                setPage={()=>this.setPage("register")}
+                setNotification={this.props.setNotification}
+                notificationState={this.props.notification}
+                />}
 
                 {this.state.page === "register" && 
                 <Register 
@@ -52,7 +52,10 @@ export default class Introduction extends React.Component {
                 password={this.props.password}
                 setPassword={this.props.setPassword}
                 baseUrl={this.props.baseUrl}
-                setPage={()=>this.setPage("login")}/>}
+                setPage={()=>this.setPage("login")}
+                setNotification={this.props.setNotification}
+                notificationState={this.props.notification}
+                />}
             </div>
         );
     }

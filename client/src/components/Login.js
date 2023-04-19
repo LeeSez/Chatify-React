@@ -3,10 +3,6 @@ import {sendHttpGetRequest} from "../clientTools";
 import Load from "./Load";
 
 export default class Login extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
     state = {
         incorrect: false,
         loading:false
@@ -14,6 +10,12 @@ export default class Login extends React.Component{
 
     setIncoreect = (val)=>{
         this.setState({incorrect:val});
+    }
+
+    checkEnter = (event)=>{
+        if(event.key === "Enter"){
+            this.verifyLoginInserver();
+        }
     }
 
     verifyLoginInserver = ()=>{
@@ -39,11 +41,11 @@ export default class Login extends React.Component{
     render(){
         return(
             <div id="login" className="flexCol">
-                {this.state.loading==true ? <Load success={false} loading={true} /> : ""}
+                {this.state.loading===true ? <Load success={false} loading={true} /> : ""}
 
                 <div className="flexCol">
-                    <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} ></input>
-                    <input name="password" type="password" placeholder="Password" onChange={this.props.setPassword}></input>
+                    <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} onKeyDown={this.checkEnter} ></input>
+                    <input name="password" type="password" placeholder="Password" onChange={this.props.setPassword} onKeyDown={this.checkEnter}></input>
                     <p onClick={this.verifyLoginInserver} className="continue">CONTINUE</p>
                 </div>
                 {this.state.incorrect && <p className="note">Email or/and Password don't match, Try again.</p>}

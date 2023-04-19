@@ -17,24 +17,28 @@ export default class Search extends React.Component{
     setSearchChar =(event)=>{
         this.setState({searchChar:event.target.value});
         clearTimeout(this.timeCount);
+        if(event.target.value === "" || event.target.value ===" "){
+            return;
+        }
         this.timeCount = setTimeout(()=>{
             this.sendSearchRequest();
-        },1000);
+        },700);
     };
 
     sendSearchRequest = ()=>{
         sendHttpGetRequest(this.props.baseUrl+"api/search?email="+this.props.email+"&password="+this.props.password+"&searchChar="+this.state.searchChar, (resopnse)=>{
             resopnse = JSON.parse(resopnse);
-            let elements = resopnse.map(contact => {
+            console.log(resopnse);
+            let elements = resopnse.map((contact,index) => {
                 let style = {
-                    backgroundImage:contact.profile_picture == "" ? "" :`url(${contact.profile_picture})`
+                    backgroundImage:contact.profile_picture === "" ? "" :`url(${contact.profile_picture})`
                 }
                 let openChat = (contact)=>{
                     this.props.setOpenChat(contact);
                     this.props.setOpenPage("");
                 }
                 return (
-                    <div className=" contact flexRow" onClick={()=>openChat(contact)}>
+                    <div key={index} className=" contact flexRow" onClick={()=>openChat(contact)}>
                         <div className="recipientImage" style={style}></div>
                         {contact.name}
                     </div>

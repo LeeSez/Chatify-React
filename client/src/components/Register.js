@@ -1,6 +1,7 @@
 import React from "react";
 import {sendHttpPostRequest, sendHttpGetRequest} from "../clientTools";
 import Load from "./Load";
+import Notification from "./Notification"
 
 export default class Register extends React.Component{
     constructor(props){
@@ -19,16 +20,15 @@ export default class Register extends React.Component{
             email:true,
             name:true
         },
-        serverMessage:"",
         profileImage:"",
         success:false,
         loading:false
     }
 
     style = {
-        email:this.state.valid.email == false ? {borderBottom:"2px solid var(--red)"} : {},
-        name:this.state.valid.name == false ? {borderBottom:"2px solid var(--red)"} : {},
-        password:this.state.valid.password == false ? {borderBottom:"2px solid var(--red)"} : {}
+        email:this.state.valid.email === false ? {borderBottom:"2px solid var(--red)"} : {},
+        name:this.state.valid.name === false ? {borderBottom:"2px solid var(--red)"} : {},
+        password:this.state.valid.password === false ? {borderBottom:"2px solid var(--red)"} : {}
     }
 
     renderImage = (event)=>{
@@ -38,11 +38,20 @@ export default class Register extends React.Component{
             this.imageDisplay.current.style.backgroundImage = `url(${uploadedImage})`;
             this.setState({profileImage:uploadedImage})
         });
-        reader.readAsDataURL(event.target.files[0]);
+
+        let fileSize = event.target.files[0].size;
+        let fileMb = fileSize / 1024 ** 2;
+        
+        if(fileMb < 1){
+            reader.readAsDataURL(event.target.files[0]);
+        }
+        else{
+            this.props.setNotification(true,"Image sixe can't go over 1MB");
+        }
     };
 
     componentDidMount(){
-        if(this.state.refresh == 0){
+        if(this.state.refresh === 0){
             sendHttpGetRequest(this.props.baseUrl+"api/registerParameters", (response)=>{
                 let parameters = JSON.parse(response);
                 this.setState({parameters:parameters, refresh:1});
@@ -51,9 +60,9 @@ export default class Register extends React.Component{
     }
     componentDidUpdate(){
         this.style = {
-            email:this.state.valid.email == false ? {borderBottom:"2px solid var(--red)"} : {},
-            name:this.state.valid.name == false ? {borderBottom:"2px solid var(--red)"} : {},
-            password:this.state.valid.password == false ? {borderBottom:"2px solid var(--red)"} : {}
+            email:this.state.valid.email === false ? {borderBottom:"2px solid var(--red)"} : {},
+            name:this.state.valid.name === false ? {borderBottom:"2px solid var(--red)"} : {},
+            password:this.state.valid.password === false ? {borderBottom:"2px solid var(--red)"} : {}
         }
     }
 
@@ -83,8 +92,7 @@ export default class Register extends React.Component{
                     (response)=>{
                         this.setState({loading:false});
                         this.buttonRef.current.disabled = false;
-                        this.setState({serverMessage:""});
-                        if(response == "successful"){
+                        if(response === "successful"){
                             this.setState({success:true});
                             setTimeout(()=>{
                                 this.setState({success:false});
@@ -97,9 +105,9 @@ export default class Register extends React.Component{
                         //error callback
                         this.setState({loading:false});
                         this.buttonRef.current.disabled = false;
-                        if(status == 500){
+                        this.props.setNotification(true,"User already exists");
+                        if(status === 500){
                             //duplicated information
-                            this.setState({serverMessage:response});
                             return;
                         }
                     });
@@ -160,6 +168,12 @@ export default class Register extends React.Component{
         }
     };
 
+    checkEnter =(event)=>{
+        if(event.key === "Enter"){
+            this.verifyRegiseterInserver();
+        }
+    }
+
     render(){
         return(
             <div id="register" className="flexCol">
@@ -168,21 +182,20 @@ export default class Register extends React.Component{
 
                 <div className="flexCol">
                     <div id="displayImage" ref={this.imageDisplay}></div>
-                    <input className="imageUpload" type="file" accept="image/png, image/jpeg" onChange={this.renderImage}/>
+                    <input className="imageUpload" type="file" accept="image/png, image/jpeg" onChange={this.renderImage} onKeyDown={this.checkEnter}/>
 
-                    <input name="name" type="text" placeholder="Name" onChange={this.setName} style={this.style.name}></input>
+                    <input name="name" type="text" placeholder="Name" onChange={this.setName} style={this.style.name} onKeyDown={this.checkEnter}/>
                     <small>{this.state.parameters.name}</small>
                     
-                    <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} style={this.style.email}></input>
+                    <input name="email" type="text" placeholder="Email" onChange={this.props.setEmail} style={this.style.email} onKeyDown={this.checkEnter}/>
                     <small>{this.state.parameters.email}</small>
 
-                    <input name="password" type="password" placeholder="Password" onChange={this.props.setPassword} style={this.style.password}></input>
+                    <input name="password" type="password" placeholder="Password" onChange={this.props.setPassword} style={this.style.password} onKeyDown={this.checkEnter}/>
                     <small>{this.state.parameters.password}</small>
                     
-                    <input name="passwordRepeat" type="password" placeholder="Password Repeat" onChange={this.setPasswordRepeat} style={this.style.password}></input>
+                    <input name="passwordRepeat" type="password" placeholder="Password Repeat" onChange={this.setPasswordRepeat} style={this.style.password} onKeyDown={this.checkEnter}/>
                     
                     <button onClick={this.verifyRegiseterInserver} className="continue" ref={this.buttonRef}>CONTINUE</button>
-                    <p id="serverMessage">{this.state.serverMessage}</p>
                 </div>
                 <p className="info flexCol">Already connected before? Go back to<strong onClick={this.props.setPage}> Login!</strong></p>
             </div>

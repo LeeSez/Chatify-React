@@ -1,11 +1,11 @@
 import React from "react";
-import {sendHttpGetRequest, sendHttpPostRequest} from "../clientTools";
+import {sendHttpPostRequest} from "../clientTools";
 import Load from "./Load";
+import Notification from "./Notification";
 
 export default class EditProfile extends React.Component {
 
     imageDisplay = React.createRef(null);
-    renderImage = React.createRef(null);
     applyBtn = React.createRef(null);
 
     state ={
@@ -34,6 +34,9 @@ export default class EditProfile extends React.Component {
         if(fileMb < 1){
             reader.readAsDataURL(event.target.files[0]);
         }
+        else{
+            this.props.setNotification(true,"Image sixe can't go over 1MB");
+        }
     };
 
     setNewName = (event)=>{
@@ -51,8 +54,8 @@ export default class EditProfile extends React.Component {
         let body = {
             email:this.props.email,
             password:this.props.password,
-            newName: (this.state.newName.length>2 && this.state.newName != this.props.personalInfo.name) ? this.state.newName : false,
-            newImage:this.state.newImage != "" ? this.state.newImage : false,
+            newName: (this.state.newName.length>2 && this.state.newName !== this.props.personalInfo.name) ? this.state.newName : false,
+            newImage:this.state.newImage !== "" ? this.state.newImage : false,
             newPassword:false
         }
         this.setState({loading:true});
@@ -61,6 +64,9 @@ export default class EditProfile extends React.Component {
             this.applyBtn.current.disabled = false;
             this.setState({success:true, loading:false});
             setTimeout(()=>{this.setState({success:false});}, 900);
+        },
+        (status, resopnse)=>{
+            this.props.setNotification(true,"Details didnt update due to a problem in the server.");
         });
     }
 

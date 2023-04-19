@@ -7,8 +7,8 @@ export default class Load extends React.Component{
         console.log(this.props.loading );
         return(
             <div className="load flexRow">
-                {this.props.success && <img className="check" src={check}/>}
-                {this.props.loading && <img className="loading" src={loadImg}/>}
+                {this.props.success && <img alt="check mark" className="check" src={check}/>}
+                {this.props.loading && <img alt="loading circle" className="loading" src={loadImg}/>}
             </div>
         );
     }

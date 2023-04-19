@@ -5,7 +5,7 @@ export default class MainSetting extends React.Component{
     render(){
         let options = this.props.options;
         let optionElements = options.map((option, index)=>{
-            if(option.name == "Log out"){
+            if(option.name === "Log out"){
                 return <button key={index} className="flexRow red" onClick={()=>option.action()}>{option.name}</button>
             }
             else{

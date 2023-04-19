@@ -23,6 +23,7 @@ http.createServer((req, res)=>{
 
         if(req.method == "GET" && !path.startsWith("/api/registerParameters")){
             email = reqUrl.query.email;
+            email = email.toLowerCase();
             password = reqUrl.query.password;
         }
 
@@ -208,8 +209,8 @@ http.createServer((req, res)=>{
                 let searchChar = reqUrl.query.searchChar;
                 if(searchChar && searchChar.length<40){
                     connection = mysql.createConnection(connectionDetails);
-                    verifyLogin(res,connection, ()=>{
-                        connection.query("SELECT email, name, profile_picture FROM users WHERE name LIKE '"+searchChar+"%';",(error, result)=>{
+                    verifyLogin(res,connection, (connection)=>{
+                        connection.query("SELECT email, name, profile_picture FROM users WHERE name LIKE '"+searchChar+"%' AND email !=?;",[email],(error, result)=>{
                             connection.end();
                             if(error){
                                 res.writeHead(500, {'Content-Type':'text/plain'});
